@@ -85,6 +85,34 @@ the real architecture underneath every agent in this room.
 or their agent produces a genuinely useful nudge, that's the "then you
 build one" moment paid off in real code instead of a diagram.
 
+### 6 — Take it further → mirrors **Campus Agent Lab, Stages 02, 04, 05, 06**
+The notebook builds four of the eight stages live because together they're
+a complete arc in ten minutes — fails on its own, gets tools, gets caught
+lying, gets gated. The other four (Router, Planner, Multi-Agent, Memory)
+are just as real, but each needs its own bit of scaffolding, and building
+all eight would have doubled the session length.
+
+Section 6 gives skeleton code for all four, reusing everything already set
+up earlier in the notebook (`client`, `MODEL`, `tools`, `available_functions`)
+— nothing new to install or configure, just new code to fill in:
+
+- **6a Router** — classify a request into Academic/Timetable/Events/Admin
+  before acting, two ways (keyword rule vs. one small model call)
+- **6b Planner** — ask the model for an ordered JSON plan of tool calls,
+  then execute the plan yourself, in order
+- **6c Multi-Agent** — two narrow specialists plus a coordinator; the
+  scaffold deliberately has each specialist read the *original* user
+  request, not a peer agent's paraphrase — the trust-boundary point from
+  the Hugging Face field report
+- **6d Memory** — the simplest of the four; a plain dict that gets read
+  back into the next prompt, proving a preference survives across calls
+  without the model being told twice
+
+**Talking point if you're facilitating live:** point people at Section 6 as
+a take-home, don't try to run it in the room. If someone finishes the
+capstone early, 6d (Memory) is the fastest one to actually complete on the
+spot.
+
 ---
 
 ## If something breaks live
