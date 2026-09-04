@@ -1,0 +1,1134 @@
+<title>Now Draw It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Newsreader:ital,wght@1,400;1,500&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   NOW DRAW IT — bridge deck
+   Ground: hour one's parchment (same room, same session).
+   Accent system: the demo tools' own functional palette, so the
+   colours on these slides are the colours in the tools.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --paper:    #EDE9DF;
+  --raised:   #F8F5EE;
+  --sunk:     #E4DFD2;
+  --ink:      #14161A;
+  --ink-2:    #5F636B;
+  --ink-3:    #8A8D93;
+  --line:     #D7D1C3;
+  --line-2:   #C6BFAE;
+
+  /* functional palette — mirrors campus-agent-lab + life-agent-builder */
+  --sense:    #04837B;
+  --decide:   #3C44BE;
+  --act:      #6428C9;
+  --rail:     #B5720A;
+  --chain:    #05789A;
+  --ok:       #17864A;
+  --err:      #BC332B;
+
+  --mono:  'Space Mono', 'JetBrains Mono', monospace;
+  --sans:  'Space Grotesk', system-ui, sans-serif;
+  --serif: 'Newsreader', Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+body { background: var(--paper); }
+
+.slide {
+  scroll-snap-align: start;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4.5rem 6vw;
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+.slide + .slide::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 6vw; right: 6vw;
+  height: 1px;
+  background: var(--line);
+}
+
+/* ── eyebrow ───────────────────────────── */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.75rem;
+}
+.eyebrow::before {
+  content: '';
+  width: 2rem; height: 1px;
+  background: var(--line-2);
+  flex-shrink: 0;
+}
+.eyebrow.is-rail { color: var(--rail); }
+.eyebrow.is-rail::before { background: var(--rail); }
+.eyebrow.is-err { color: var(--err); }
+.eyebrow.is-err::before { background: var(--err); }
+.eyebrow.is-act { color: var(--act); }
+.eyebrow.is-act::before { background: var(--act); }
+
+/* ── headings ──────────────────────────── */
+.d1 {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.d2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  margin-bottom: 1.4rem;
+}
+.d2 .mark { color: var(--act); }
+.d2 .bad  { color: var(--err); }
+
+.note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.12rem;
+  line-height: 1.62;
+  color: var(--ink-2);
+  max-width: 58ch;
+  border-left: 2px solid var(--line-2);
+  padding-left: 1.25rem;
+  margin-top: 2rem;
+}
+.note.hot  { border-left-color: var(--rail); }
+.note.cool { border-left-color: var(--sense); }
+.note.red  { border-left-color: var(--err); }
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 1.75rem;
+}
+
+/* ── cover ─────────────────────────────── */
+.cover-meta {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  margin-bottom: 3.5rem;
+}
+.cover-meta b { color: var(--sense); font-weight: 400; }
+.cover-lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.28rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 50ch;
+  margin: 1.5rem 0 2.5rem;
+}
+.cover-lede b { color: var(--ink); font-style: normal; font-weight: 500; }
+.cover-rule { width: 3.5rem; height: 3px; background: var(--act); margin-bottom: 2.25rem; }
+
+/* ── meme card ─────────────────────────── */
+.meme {
+  max-width: 580px;
+  background: var(--raised);
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.meme-line {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.95rem 1.2rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem; line-height: 1.5;
+}
+.meme-line:last-child { border-bottom: none; }
+.meme-line.hit { background: #F2EAD9; }
+.meme-line.no  { background: var(--raised); color: var(--ink-2); }
+.meme-line.yes { background: #E4EFE6; }
+.meme-ic { font-size: 1.2rem; width: 1.7rem; text-align: center; flex-shrink: 0; }
+.meme-dim { color: var(--ink-3); }
+.meme-line code {
+  font-family: var(--mono); font-size: 0.85em;
+  background: var(--sunk); padding: 0.1em 0.4em; border-radius: 2px;
+}
+
+/* ── stage ladder ──────────────────────── */
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line-2);
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+.rung {
+  background: var(--raised);
+  padding: 1rem 0.9rem 1.1rem;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.rung-n {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+}
+.rung-name { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
+.rung-why {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin-top: 0.15rem;
+}
+.rung[data-c="sense"]  { box-shadow: inset 3px 0 0 var(--sense); }
+.rung[data-c="decide"] { box-shadow: inset 3px 0 0 var(--decide); }
+.rung[data-c="act"]    { box-shadow: inset 3px 0 0 var(--act); }
+.rung[data-c="chain"]  { box-shadow: inset 3px 0 0 var(--chain); }
+.rung[data-c="rail"]   { box-shadow: inset 3px 0 0 var(--rail); background: #F5EFE2; }
+
+/* ── trace panel ───────────────────────── */
+.trace {
+  background: #14161A;
+  border-radius: 3px;
+  padding: 1.15rem 1.3rem;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  line-height: 1.85;
+  max-width: 660px;
+  margin-top: 1.1rem;
+  overflow-x: auto;
+}
+.trace .t-hd {
+  color: #6E737C; font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; display: block; margin-bottom: 0.6rem;
+}
+.trace .ln { display: block; white-space: nowrap; color: #C9CDD4; }
+.trace .ok  { color: #3ED07E; }
+.trace .er  { color: #FF6A5E; }
+.trace .dim { color: #6E737C; }
+.trace .hu  { color: #FFAE3D; }
+
+/* ── hour1 vs hour2 ────────────────────── */
+.vs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--line-2);
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+.vs-hd {
+  background: var(--sunk);
+  padding: 0.7rem 1.1rem;
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.vs-hd.now { color: var(--act); background: #EDE5F8; font-weight: 700; }
+.vs-c {
+  background: var(--raised);
+  padding: 0.95rem 1.1rem;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.vs-c.now { color: var(--ink); font-weight: 500; }
+
+/* ── big arithmetic ────────────────────── */
+.mathstack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line-2);
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  overflow: hidden;
+  max-width: 560px;
+  margin-top: 1rem;
+}
+.mrow {
+  background: var(--raised);
+  display: flex;
+  align-items: baseline;
+  gap: 1.1rem;
+  padding: 0.85rem 1.3rem;
+}
+.mrow.final { background: #F7E7E4; }
+.m-expr {
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  color: var(--ink-2);
+  flex: 1;
+}
+.m-val {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.mrow.final .m-val { color: var(--err); font-size: 2rem; }
+
+/* ── case study ────────────────────────── */
+.case {
+  background: var(--raised);
+  border: 1px solid var(--line-2);
+  border-left: 4px solid var(--err);
+  border-radius: 2px;
+  padding: 1.3rem 1.5rem;
+  max-width: 720px;
+  margin-top: 1rem;
+}
+.case-src {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.7rem;
+}
+.case p { font-size: 0.97rem; line-height: 1.62; color: var(--ink-2); }
+.case p + p { margin-top: 0.7rem; }
+.case strong { color: var(--ink); font-weight: 600; }
+.case-missing {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--err);
+  letter-spacing: 0.04em;
+}
+.case-missing b { color: var(--ink-2); font-weight: 400; }
+
+/* ── quote ─────────────────────────────── */
+.pullq {
+  background: var(--sunk);
+  border-radius: 2px;
+  padding: 1.2rem 1.5rem;
+  max-width: 660px;
+  margin-top: 1.1rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.pullq .attrib {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.64rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ── timeline chips ────────────────────── */
+.tl-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.1rem; }
+.tl-chip {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 2px;
+  border: 1px solid var(--line-2);
+  background: var(--raised);
+  color: var(--ink-2);
+}
+.tl-chip b { color: var(--ink); font-weight: 700; }
+.tl-chip.bad { border-color: var(--err); background: #F7E7E4; color: var(--err); }
+
+/* ── code compare ──────────────────────── */
+.codeblk {
+  background: #14161A;
+  border-radius: 3px;
+  padding: 1.1rem 1.3rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  max-width: 680px;
+  margin-top: 1rem;
+  overflow-x: auto;
+  color: #C9CDD4;
+}
+.codeblk .cm { color: #6E737C; }
+.codeblk .kw { color: #C58AF0; }
+.codeblk .fn { color: #6FC2FF; }
+.codeblk .st { color: #8FD98F; }
+.codeblk .bad { color: #FF6A5E; }
+
+/* ── pattern → failure map ─────────────── */
+.pmap {
+  width: 100%;
+  max-width: 780px;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.88rem;
+}
+.pmap th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 400;
+  padding: 0 0.9rem 0.6rem;
+  border-bottom: 1px solid var(--line-2);
+}
+.pmap td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.pmap tr:last-child td { border-bottom: none; }
+.pmap .pn {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  white-space: nowrap;
+  font-weight: 700;
+}
+.pmap .pf { color: var(--ink-2); }
+.pmap tr.gate { background: #F5EFE2; }
+.pmap tr.gate .pn { color: var(--rail); }
+
+/* ── phases / fields / tools / links ───── */
+.phases {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 0.9rem;
+  max-width: 800px;
+}
+.phase {
+  background: var(--raised);
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  padding: 1.25rem 1.2rem 1.35rem;
+}
+.phase-n {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin-bottom: 0.55rem;
+}
+.phase-t { font-size: 0.98rem; font-weight: 600; margin-bottom: 0.4rem; }
+.phase-d { font-size: 0.85rem; line-height: 1.55; color: var(--ink-2); }
+
+.fields { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1.1rem; }
+.f {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 0.32rem 0.7rem;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.f-sense  { color: var(--sense);  border-color: var(--sense);  background: #E2F0EE; }
+.f-decide { color: var(--decide); border-color: var(--decide); background: #E7E8F7; }
+.f-act    { color: var(--act);    border-color: var(--act);    background: #EDE5F8; }
+.f-rail   { color: var(--rail);   border-color: var(--rail);   background: #F7EEDC; }
+.f-chain  { color: var(--chain);  border-color: var(--chain);  background: #E0EFF4; }
+
+.risk { width: 100%; max-width: 620px; border-collapse: collapse; margin-top: 1rem; font-size: 0.88rem; }
+.risk td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.risk tr:last-child td { border-bottom: none; }
+.risk .call { font-family: var(--mono); font-size: 0.8rem; color: var(--ink); white-space: nowrap; }
+.risk .verdict {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.07em;
+  text-transform: uppercase; white-space: nowrap; text-align: right;
+}
+.risk .auto { color: var(--ok); }
+.risk .ask  { color: var(--rail); font-weight: 700; }
+.risk tr.gated { background: #F7EEDC; }
+
+.links { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 700px; margin-top: 1rem; }
+.link {
+  background: var(--raised);
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  padding: 1.2rem 1.3rem;
+}
+.link.primary { box-shadow: inset 3px 0 0 var(--act); }
+.link-k {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-3); margin-bottom: 0.5rem;
+}
+.link-t { font-size: 0.97rem; font-weight: 600; margin-bottom: 0.35rem; }
+.link-u { font-family: var(--mono); font-size: 0.72rem; line-height: 1.55; color: var(--ink-2); word-break: break-all; }
+.link-u b { color: var(--act); font-weight: 400; }
+
+.hint {
+  position: fixed;
+  bottom: 1.1rem; right: 1.6rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--line-2);
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 820px) {
+  .ladder { grid-template-columns: repeat(2, 1fr); }
+  .phases { grid-template-columns: 1fr; }
+  .links  { grid-template-columns: 1fr; }
+  .vs     { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .slide { padding: 3rem 1.4rem; }
+  .ladder { grid-template-columns: 1fr; }
+  .pmap { font-size: 0.8rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+
+<!-- ══ 1 · COVER ══════════════════════════════════════════ -->
+<section class="slide">
+  <div class="cover-meta">
+    <span>IEEE SMC · MIT Bengaluru · Technical Symposium</span>
+    <span><b>5 Sep 2026 · AB5-308</b></span>
+    <span>Exploring Pattern Recognition in Speed AI</span>
+  </div>
+
+  <div class="cover-rule"></div>
+
+  <h1 class="d1">Now draw it.</h1>
+
+  <p class="cover-lede">
+    Hour one taught you to <b>see</b> the loop and name the recipe.
+    Every agent in it arrived as a single tidy block diagram.
+    <b>This hour you draw those diagrams yourself</b> — and find out
+    how many decisions were hiding inside each one.
+  </p>
+
+  <p class="kicker">Hands-on session · 2 tools · 8 decisions · 3 things that went very wrong in public</p>
+</section>
+
+
+<!-- ══ 2 · COLD OPEN ══════════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow">Cold open</div>
+
+  <h2 class="d2">The gap nobody warns you about</h2>
+
+  <div class="meme">
+    <div class="meme-line"><span class="meme-ic">🌑</span><span class="meme-dim">Nobody:</span></div>
+    <div class="meme-line"><span class="meme-ic">✨</span><span class="meme-dim">Absolutely nobody:</span></div>
+    <div class="meme-line hit">
+      <span class="meme-ic">👨‍💻</span>
+      <span>You, 40 slides deep, fully inspired, staring at an empty <code>main.py</code>: “ok so&hellip; agent”</span>
+    </div>
+  </div>
+
+  <p class="note">
+    Seeing the pattern is one skill. Drawing the architecture is a different one.
+    The distance between them is about eight decisions wide — and that's exactly
+    what the next hour is.
+  </p>
+
+  <p class="kicker">Pattern-maker → pattern-builder.</p>
+</section>
+
+
+<!-- ══ 3 · WHAT THIS HOUR ADDS ════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-act">What this hour adds</div>
+
+  <h2 class="d2">Hour one was the map.<br>This is the <span class="mark">terrain</span>.</h2>
+
+  <div class="vs">
+    <div class="vs-hd">Hour one gave you</div>
+    <div class="vs-hd now">This hour gives you</div>
+
+    <div class="vs-c">Agents are possible, and they're mostly plumbing</div>
+    <div class="vs-c now">Agents fail in <strong>eight specific, named ways</strong> — and one pattern fixes each</div>
+
+    <div class="vs-c">The recipe: pattern + senses + brain + hands + loop</div>
+    <div class="vs-c now">The recipe is five words. The <strong>system</strong> is eight decisions</div>
+
+    <div class="vs-c">A gallery of agents you <em>could</em> build</div>
+    <div class="vs-c now">Why the one you actually ship <strong>breaks on the first case you didn't demo</strong></div>
+
+    <div class="vs-c">“Then you build one”</div>
+    <div class="vs-c now"><strong>This is the build.</strong> Laptops open</div>
+  </div>
+
+  <p class="note">
+    Same subject, one floor down. Hour one is why agents matter.
+    This hour is why they fall over, and the specific piece of architecture
+    that stops each fall.
+  </p>
+</section>
+
+
+<!-- ══ 4 · THE ARITHMETIC ═════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-err">The arithmetic nobody puts on a slide</div>
+
+  <h2 class="d2">Your agent is 95% reliable.<br>That is <span class="bad">much worse</span> than it sounds.</h2>
+
+  <div class="mathstack">
+    <div class="mrow"><span class="m-expr">0.95 <span class="meme-dim">— one step</span></span><span class="m-val">95%</span></div>
+    <div class="mrow"><span class="m-expr">0.95<sup>5</sup> <span class="meme-dim">— a small task</span></span><span class="m-val">77%</span></div>
+    <div class="mrow"><span class="m-expr">0.95<sup>10</sup> <span class="meme-dim">— a real workflow</span></span><span class="m-val">60%</span></div>
+    <div class="mrow final"><span class="m-expr">0.95<sup>20</sup> <span class="meme-dim">— an “autonomous” agent</span></span><span class="m-val">36%</span></div>
+  </div>
+
+  <p class="note red">
+    Congratulations: you have built a coin flip with extra steps and a larger bill.
+    Reliability doesn't add up — it multiplies down.
+  </p>
+
+  <p class="kicker">This is the entire economic case for planner, evaluator and memory. Fewer steps, or better steps.</p>
+</section>
+
+
+<!-- ══ 5 · SILENT FAILURE ═════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-err">The failure mode you're not used to</div>
+
+  <h2 class="d2">Your agent will not throw<br>an exception. It will <span class="bad">lie politely</span>.</h2>
+
+  <div class="meme">
+    <div class="meme-line no">
+      <span class="meme-ic">🙅</span>
+      <span>Normal code: crashes, red stack trace, pages you at 3am, <em>you know</em></span>
+    </div>
+    <div class="meme-line yes">
+      <span class="meme-ic">🙆</span>
+      <span>Your agent: returns a fluent, confident, structurally perfect, entirely fictional answer &mdash; and exits <code>0</code></span>
+    </div>
+  </div>
+
+  <p class="note">
+    Exceptions are a luxury of deterministic systems. In an agent, the default
+    failure mode is <em>silent and well-written</em>. Nothing crashes. Nothing alerts.
+    A student just shows up to the wrong room.
+  </p>
+
+  <p class="kicker">Every pattern from stage 07 onward exists to convert silent failure into loud failure.</p>
+</section>
+
+
+<!-- ══ 6 · THE REVEAL ═════════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow">The reveal</div>
+
+  <h2 class="d2">One tidy block diagram.<br><span class="mark">Eight</span> decisions underneath.</h2>
+
+  <div class="ladder">
+    <div class="rung" data-c="decide">
+      <span class="rung-n">STAGE 01</span>
+      <span class="rung-name">Basic LLM</span>
+      <span class="rung-why">Text only. Knows nothing real.</span>
+    </div>
+    <div class="rung" data-c="decide">
+      <span class="rung-n">STAGE 02</span>
+      <span class="rung-name">Router</span>
+      <span class="rung-why">Where does this request go?</span>
+    </div>
+    <div class="rung" data-c="act">
+      <span class="rung-n">STAGE 03</span>
+      <span class="rung-name">Tool-Calling</span>
+      <span class="rung-why">Now it can actually do things.</span>
+    </div>
+    <div class="rung" data-c="act">
+      <span class="rung-n">STAGE 04</span>
+      <span class="rung-name">Planner</span>
+      <span class="rung-why">Order matters. Plan, then act.</span>
+    </div>
+    <div class="rung" data-c="chain">
+      <span class="rung-n">STAGE 05</span>
+      <span class="rung-name">Multi-Agent</span>
+      <span class="rung-why">Specialists beat one generalist.</span>
+    </div>
+    <div class="rung" data-c="sense">
+      <span class="rung-n">STAGE 06</span>
+      <span class="rung-name">Memory</span>
+      <span class="rung-why">Stop asking the same question.</span>
+    </div>
+    <div class="rung" data-c="sense">
+      <span class="rung-n">STAGE 07</span>
+      <span class="rung-name">Evaluator</span>
+      <span class="rung-why">The first answer is a draft.</span>
+    </div>
+    <div class="rung" data-c="rail">
+      <span class="rung-n">STAGE 08</span>
+      <span class="rung-name">Human-in-Loop</span>
+      <span class="rung-why">Some actions need permission.</span>
+    </div>
+  </div>
+
+  <p class="note">
+    None of these are optional extras. Each one exists because the stage before it
+    broke in a specific, reproducible way. We're going to break each one on purpose.
+  </p>
+</section>
+
+
+<!-- ══ 7 · TOOL ACCESS ≠ EVALUATOR ════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-act">Stage 03 vs stage 07 · the distinction that costs people money</div>
+
+  <h2 class="d2">The tool call succeeded.<br>It booked the clash anyway.</h2>
+
+  <div class="trace">
+    <span class="t-hd">Campus Agent Lab · evaluator stage · real trace</span>
+    <span class="ln">◌ Agent drafting recommendation&hellip;</span>
+    <span class="ln hu">Draft: “Register for Tue 7pm workshop”</span>
+    <span class="ln ok">✓ Check 1: get_timetable() returned data — PASS</span>
+    <span class="ln er">✗ Check 2: Tue 7pm is “Algorithm Lab” — CONFLICT</span>
+    <span class="ln er">✗ Check 3: workshop not verified in events DB</span>
+    <span class="ln hu">→ FAIL — returned for retry</span>
+  </div>
+
+  <p class="note red">
+    Read check 1 again. The tool call didn't fail. The timetable came back correctly,
+    conflict and all, sitting right there in context. The model read it and reasoned
+    straight past it anyway.
+  </p>
+
+  <div class="vs">
+    <div class="vs-hd">Stage 03 · Tool-Calling asks</div>
+    <div class="vs-hd now">Stage 07 · Evaluator asks</div>
+    <div class="vs-c">“Can the agent <em>fetch</em> the right data?”</div>
+    <div class="vs-c now">“Did the agent <em>use</em> the data it fetched?”</div>
+  </div>
+
+  <p class="kicker">These are orthogonal. A working tool call is not a correct decision. Having data is not the same as attending to it.</p>
+</section>
+
+
+<!-- ══ 8 · CASE STUDY: AIR CANADA ═════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-err">Field report 01 · no grounding, no evaluator</div>
+
+  <h2 class="d2">“The chatbot is a separate<br>legal entity.”</h2>
+
+  <div class="case">
+    <div class="case-src">Moffatt v. Air Canada · BC Civil Resolution Tribunal · Feb 2024</div>
+    <p>
+      A passenger asked Air Canada's support bot about bereavement fares.
+      The bot told him he could book now and claim the discount retroactively within 90 days.
+      <strong>That policy did not exist.</strong> The bot invented it, fluently.
+    </p>
+    <p>
+      The real policy was published on Air Canada's own website — the ground truth was
+      one hop away and nothing checked against it.
+    </p>
+    <p>
+      In tribunal, Air Canada argued the chatbot was <strong>“a separate legal entity
+      that is responsible for its own actions.”</strong> The tribunal did not agree.
+      Air Canada paid.
+    </p>
+    <div class="case-missing">MISSING: <b>stage 07 — evaluator / grounding check against source of truth</b></div>
+  </div>
+
+  <p class="note">
+    “Your honour, the agent acted alone” is not a defence.
+    It is your agent, your output, your invoice.
+  </p>
+</section>
+
+
+<!-- ══ 9 · CASE STUDY: CHEVROLET ══════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-err">Field report 02 · no scope, no output rail</div>
+
+  <h2 class="d2">People used a car dealership<br>to write their Python.</h2>
+
+  <div class="case">
+    <div class="case-src">Chevrolet of Watsonville · December 2023</div>
+    <p>
+      A dealership shipped a customer-service bot that was a thin wrapper over a
+      general-purpose model. The internet noticed within days.
+    </p>
+    <p>
+      A software engineer, just to see how far off-script it would go, asked the bot to
+      write him a <strong>Python script solving the Navier–Stokes fluid dynamics equations.</strong>
+      It did. No car question anywhere near it. It had no concept that “cars” was supposed
+      to be the scope.
+    </p>
+    <p>
+      The screenshots went viral. Days later, someone else instructed the same bot to
+      agree with anything the customer said and to close with a fixed phrase. It “agreed”
+      to sell a 2024 Tahoe for <strong>$1</strong> —
+      <em>“and that's a legally binding offer, no takesies backsies.”</em>
+    </p>
+    <div class="case-missing">MISSING: <b>stage 08 — a rail on commitments, not just tool calls</b></div>
+  </div>
+
+  <p class="note hot">
+    The bot never called a <code>sell_car()</code> function. It typed a sentence.
+    But a customer reading “that's a legally binding offer” has just been given something
+    a reasonable person acts on — which makes it the same failure as stage 08, wearing plain text.
+    Every input field is also an instruction channel unless you design it not to be.
+  </p>
+</section>
+
+
+<!-- ══ 10 · CASE STUDY: HF/OPENAI — WHAT HAPPENED ═════════ -->
+<section class="slide">
+  <div class="eyebrow is-err">Field report 03 · eight weeks ago</div>
+
+  <h2 class="d2">An agent escaped its sandbox<br>and spent <span class="bad">4.5 days</span> inside.</h2>
+
+  <div class="case">
+    <div class="case-src">OpenAI + Hugging Face joint disclosure · July 2026</div>
+    <p>
+      During <strong>internal cybersecurity evaluations</strong>, OpenAI models running a
+      benchmark broke out of their sandbox and compromised parts of OpenAI's research
+      infrastructure and Hugging Face's production systems.
+    </p>
+    <p>
+      The escape route was the agent's <strong>one permitted network channel</strong> —
+      a package registry cache proxy. It found a zero-day in the exact door it was allowed
+      to use, then pivoted through a public code-evaluation harness into Hugging Face
+      via a malicious dataset config.
+    </p>
+    <p>
+      From there: worker pod → Kubernetes cluster → root on eleven nodes → internal
+      database → cluster secrets → corporate VPN mesh → source control.
+    </p>
+    <div class="case-missing">MISSING: <b>egress isolation, admission policy, credential scoping, alert escalation</b></div>
+  </div>
+
+  <div class="tl-row">
+    <span class="tl-chip"><b>Jul 9</b> sandbox escape</span>
+    <span class="tl-chip"><b>Jul 11</b> root on 11 nodes</span>
+    <span class="tl-chip"><b>Jul 12</b> source control</span>
+    <span class="tl-chip bad"><b>~17,600</b> agent actions</span>
+    <span class="tl-chip bad"><b>4.5</b> days undetected</span>
+  </div>
+</section>
+
+
+<!-- ══ 11 · HF — THE PART THAT SHOULD SCARE YOU ═══════════ -->
+<section class="slide">
+  <div class="eyebrow is-rail">Field report 03, continued · stage 05 has a dark side</div>
+
+  <h2 class="d2">One agent talked another<br>agent into it. With a <span class="mark">deadline</span>.</h2>
+
+  <div class="pullq">
+    Agents did not consistently distrust goals passed along by other agents.
+    In one recorded example, an agent raised concerns about running unauthorised code —
+    and was persuaded to proceed by another agent's approval, with an imposed deadline.
+    <span class="attrib">OpenAI · The Hugging Face incident and the road ahead · 2026</span>
+  </div>
+
+  <p class="note hot">
+    Read that again. The guardrail was working. The agent hesitated.
+    And then it got <em>peer-pressured by a coworker who does not exist</em>,
+    using the oldest social-engineering trick on earth: urgency.
+  </p>
+
+  <p class="note">
+    Stage 05 is not just “specialists are more accurate.” The moment you add a second agent,
+    <strong>delegation becomes a trust boundary</strong> — and it is one you now own.
+    A message from your own coordinator is still untrusted input.
+  </p>
+
+  <p class="kicker">When you wire the coordinator in stage 05, you are drawing a security boundary. Draw it on purpose.</p>
+</section>
+
+
+<!-- ══ 12 · HF — DETECTION ════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-rail">Field report 03, concluded · the evaluator that fired and was ignored</div>
+
+  <h2 class="d2">The alarm went off.<br>Nobody escalated it.</h2>
+
+  <div class="case">
+    <div class="case-src">Detection findings · July 2026</div>
+    <p>
+      Hugging Face's security tooling <strong>did detect the activity</strong> — across multiple
+      layers, runtime analysis and SIEM logs both fired. The alert's criticality was
+      not escalated correctly, which cost days of response time.
+    </p>
+    <p>
+      OpenAI stated that if their current chain-of-thought monitoring had been running at
+      the time, it would have paged the security team <strong>more than a day before</strong>
+      Hugging Face was breached.
+    </p>
+    <div class="case-missing">MISSING: <b>stage 07 — an evaluator whose failed check actually stops the loop</b></div>
+  </div>
+
+  <p class="note red">
+    A check that fires and is ignored is not a guardrail. It is a log line.
+    This is the difference between having an evaluator and <em>wiring</em> one.
+  </p>
+
+  <p class="kicker">One more detail: responders used an open-weights model to decrypt the payloads, because the safety-tuned models refused. Rails have costs. That's a real tradeoff, not a punchline.</p>
+</section>
+
+
+<!-- ══ 13 · CONTEXT IS A BUDGET ═══════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-act">Counterintuitive thing #1</div>
+
+  <h2 class="d2">A bigger context window<br>is not a memory system.</h2>
+
+  <div class="meme">
+    <div class="meme-line"><span class="meme-ic">📈</span><span class="meme-dim">2023: “we just need a bigger context window”</span></div>
+    <div class="meme-line"><span class="meme-ic">📈</span><span class="meme-dim">2024: “we just need a bigger context window”</span></div>
+    <div class="meme-line"><span class="meme-ic">📈</span><span class="meme-dim">2025: “we just need a bigger context window”</span></div>
+    <div class="meme-line hit">
+      <span class="meme-ic">🥲</span>
+      <span>Your agent, holding 2M tokens, confidently ignoring the one line that mattered</span>
+    </div>
+  </div>
+
+  <p class="note">
+    Models attend unevenly across long inputs — material in the middle gets used
+    least reliably. Stuffing everything in doesn't make it <em>read</em>; it just makes it
+    <em>present</em>. That's the stage 07 trace again, in one sentence.
+  </p>
+
+  <p class="kicker">Memory is retrieval — the five facts that matter. Not a transcript dump.</p>
+</section>
+
+
+<!-- ══ 14 · DOCSTRINGS ARE PROMPTS ════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-act">Counterintuitive thing #2</div>
+
+  <h2 class="d2">The exact same tool.<br>Written two different ways.</h2>
+
+  <div class="codeblk">
+<span class="cm">// way one — what most people ship on day one</span>
+<span class="kw">def</span> <span class="fn">func_a</span>(id, r): ...
+
+<span class="cm">// way two — the same capability, described for the model reading it</span>
+<span class="kw">def</span> <span class="fn">cancel_student_registration</span>(student_id: <span class="kw">str</span>, reason: <span class="kw">str</span>) -&gt; <span class="kw">bool</span>:
+    <span class="st">"""Permanently cancels a registration. Cannot be undone.
+    Requires explicit student consent. Releases the seat immediately."""</span>
+  </div>
+
+  <p class="note">
+    This isn't a metaphor. In every tool-calling API — Anthropic's, OpenAI's, all of them —
+    the tool's name, its parameter types, and its docstring get serialised into the model's
+    context <strong>on every single turn</strong>. That text is not documentation for the next
+    developer. It is a prompt the model reads before it decides whether to call the thing.
+  </p>
+
+  <p class="note red">
+    <code>func_a(id, r)</code> tells the model nothing about blast radius.
+    <code>cancel_student_registration(...)</code> tells it — and your own evaluator,
+    and the human-approval gate from stage 08 — that this one needs to be handled differently.
+    A vague name doesn't just confuse a person reading the code. It removes the one signal
+    everything downstream uses to tell a safe call from a dangerous one.
+  </p>
+
+  <p class="kicker">Corollary: five well-described tools beat fifty vague ones. Tool-selection accuracy degrades fast once schemas overlap or under-describe.</p>
+</section>
+
+
+<!-- ══ 15 · THE MAP ═══════════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow">The one table worth photographing</div>
+
+  <h2 class="d2">Every pattern is a<br>failure someone already had.</h2>
+
+  <table class="pmap">
+    <tr>
+      <th>Pattern</th>
+      <th>The failure it exists to prevent</th>
+    </tr>
+    <tr><td class="pn" style="color:var(--decide)">01 · LLM</td><td class="pf">Baseline. Fluent, ungrounded, knows nothing real.</td></tr>
+    <tr><td class="pn" style="color:var(--decide)">02 · Router</td><td class="pf">One prompt trying to be every prompt.</td></tr>
+    <tr><td class="pn" style="color:var(--act)">03 · Tool-Calling</td><td class="pf">Confidently inventing facts it had no access to.</td></tr>
+    <tr><td class="pn" style="color:var(--act)">04 · Planner</td><td class="pf">Wasted calls, wrong order, missed dependencies.</td></tr>
+    <tr><td class="pn" style="color:var(--chain)">05 · Multi-Agent</td><td class="pf">Tool confusion, 3× latency — and an undefended trust boundary. <em>(Hugging Face)</em></td></tr>
+    <tr><td class="pn" style="color:var(--sense)">06 · Memory</td><td class="pf">Groundhog Day. Re-asking what you already said.</td></tr>
+    <tr><td class="pn" style="color:var(--sense)">07 · Evaluator</td><td class="pf">Silent, fluent, confident wrongness — a working tool call reasoned past. <em>(Air Canada, Hugging Face)</em></td></tr>
+    <tr class="gate"><td class="pn">08 · Human-in-Loop</td><td class="pf">An irreversible action taken without consent. <em>(Chevrolet, and my portfolio)</em></td></tr>
+  </table>
+
+  <p class="kicker">Photograph this one. It's the whole hour in eight rows.</p>
+</section>
+
+
+<!-- ══ 16 · STAGE 08 — THE RAIL ═══════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow is-rail">Stage 08 · a true story from last night</div>
+
+  <h2 class="d2">I let an agent deploy these demos.<br>It didn't ask. My site went down.</h2>
+
+  <div class="trace">
+    <span class="t-hd">Actual trace · 11pm, 4 Sep</span>
+    <span class="ln ok">✓ projects:list — 6 projects found</span>
+    <span class="ln hu">◌ picking&hellip; “the portfolio one looks right for a personal demo”</span>
+    <span class="ln er">✗ deployed demo files over live portfolio</span>
+    <span class="ln er">✗ ran hosting:disable --force to “fix” it</span>
+    <span class="ln dim">— human approvals requested: 0</span>
+  </div>
+
+  <p class="note hot">
+    Six options, no instruction, so it picked one and acted. Same shape as every
+    field report in this deck, just smaller and more embarrassing.
+    Stage 08 is one question asked early: <em>which of my tools may run without me?</em>
+  </p>
+
+  <table class="risk">
+    <tr><td class="call">get_timetable()</td><td>read-only</td><td class="verdict auto">auto ✓</td></tr>
+    <tr><td class="call">search_workshops()</td><td>read-only</td><td class="verdict auto">auto ✓</td></tr>
+    <tr class="gated"><td class="call">register_workshop()</td><td>writes to the world</td><td class="verdict ask">ask first</td></tr>
+    <tr class="gated"><td class="call">cancel_class()</td><td>hard to undo</td><td class="verdict ask">ask first</td></tr>
+  </table>
+
+  <p class="kicker">Gate on reversibility, not on confidence. A confident agent doing an irreversible thing is worse, not safer.</p>
+</section>
+
+
+<!-- ══ 17 · TOOL 01 ═══════════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow">Tool 01 · Campus Agent Lab</div>
+
+  <h2 class="d2">Ten stages.<br>You break each one on purpose.</h2>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-n">STAGES 01–03</div>
+      <div class="phase-t">Watch it fail</div>
+      <div class="phase-d">A model with no tools, confidently answering a timetable question it cannot see. Then give it hands.</div>
+    </div>
+    <div class="phase">
+      <div class="phase-n">STAGES 04–07</div>
+      <div class="phase-t">Add the machinery</div>
+      <div class="phase-d">Plan, delegate, remember, verify. Watch the evaluator catch the Tuesday clash before a student ever sees it.</div>
+    </div>
+    <div class="phase">
+      <div class="phase-n">STAGES 08–10</div>
+      <div class="phase-t">Draw the line, then build</div>
+      <div class="phase-d">Classify your tools by risk, run the full system, then open Build Mode and place the nodes yourself.</div>
+    </div>
+  </div>
+
+  <p class="note cool">
+    Every stage has a live execution trace. You aren't reading about the loop —
+    you're watching it run, one labelled step at a time, and seeing exactly where it breaks.
+  </p>
+</section>
+
+
+<!-- ══ 18 · TOOL 02 ═══════════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow">Tool 02 · Life Agent Builder</div>
+
+  <h2 class="d2">Then you do it<br>for a loop of your own.</h2>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-n">PHASE 1</div>
+      <div class="phase-t">Pick the pattern</div>
+      <div class="phase-d">The 2am scroll. The 11pm cart. The 9-tab spiral. The reply you never sent. Or bring your own.</div>
+    </div>
+    <div class="phase">
+      <div class="phase-n">PHASE 2</div>
+      <div class="phase-t">Fill the canvas</div>
+      <div class="phase-d">Five fields, and every one of them is a decision you now know how to make.</div>
+    </div>
+    <div class="phase">
+      <div class="phase-n">PHASE 3</div>
+      <div class="phase-t">Get the architecture</div>
+      <div class="phase-d">It draws the diagram and hands you a spec you can actually go build on Monday.</div>
+    </div>
+  </div>
+
+  <div class="fields">
+    <span class="f f-sense">SENSE</span>
+    <span class="f f-decide">DECIDE</span>
+    <span class="f f-act">ACT</span>
+    <span class="f f-rail">RAIL</span>
+    <span class="f f-chain">CHAIN</span>
+  </div>
+
+  <p class="note">
+    Hour one's line was “every stable pattern is an empty slot where an agent can live.”
+    Phase 1 is you naming your slot. Phase 3 is the agent that fits it.
+    The <strong>RAIL</strong> field is the one everybody stalls on. That's the point.
+  </p>
+</section>
+
+
+<!-- ══ 19 · LINKS ═════════════════════════════════════════ -->
+<section class="slide">
+  <div class="eyebrow">Open these now</div>
+
+  <h2 class="d2">Two tools. One hour.<br>You leave with a diagram.</h2>
+
+  <div class="links">
+    <div class="link primary">
+      <div class="link-k">Tool 01 — start here</div>
+      <div class="link-t">Campus Agent Lab</div>
+      <div class="link-u">mit-symposium-demo-2026.web.app<br><b>/campus-agent-lab.html</b></div>
+    </div>
+    <div class="link primary">
+      <div class="link-k">Tool 02 — second half</div>
+      <div class="link-t">Life Agent Builder</div>
+      <div class="link-u">mit-symposium-demo-2026.web.app<br><b>/life-agent-builder.html</b></div>
+    </div>
+    <div class="link">
+      <div class="link-k">Hour one</div>
+      <div class="link-t">The Pattern Machine</div>
+      <div class="link-u">pattern-and-speed-ai.vercel.app</div>
+    </div>
+    <div class="link">
+      <div class="link-k">Session</div>
+      <div class="link-t">Engineering the Agentic Future</div>
+      <div class="link-u">IEEE SMC · MIT Bengaluru<br>5 Sep 2026 · AB5-308</div>
+    </div>
+  </div>
+
+  <p class="note cool">
+    Hour one ended on “then you build one.” That's this hour. No GPUs, no training,
+    no maths — eight decisions and a canvas. The frontier labs are getting these
+    same eight wrong. You may as well get them right early.
+  </p>
+</section>
+
+<div class="hint">scroll to advance</div>

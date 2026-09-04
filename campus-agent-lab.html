@@ -1,0 +1,1179 @@
+<title>Campus Agent Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070C15;--bp:#0D1827;--bc:#131F32;--bh:#162438;
+  --bd:#1A3054;--bdb:#27436E;
+  --t:#C0D4EE;--t2:#577099;--t3:#2D4A6E;
+  --cllm:#4B8FFF;--cagt:#7C40F0;--ctool:#05C9A8;
+  --crtr:#09B5DC;--cpln:#5560E8;--cmem:#F5A623;
+  --cevl:#A045F5;--chum:#F57316;--cok:#1EC96A;--cerr:#EF4444;
+  --font-m:'Space Mono','Courier New',monospace;
+  --font-u:'DM Sans',system-ui,sans-serif;
+  --r:6px;--rl:10px
+}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){
+  --bg:#EEF3FC;--bp:#FFFFFF;--bc:#F4F8FF;--bh:#EAF0FD;
+  --bd:#C8D8EF;--bdb:#A0BEDF;
+  --t:#1A2E4A;--t2:#4A6A90;--t3:#8AAAC8
+}}
+:root[data-theme=light]{
+  --bg:#EEF3FC;--bp:#FFFFFF;--bc:#F4F8FF;--bh:#EAF0FD;
+  --bd:#C8D8EF;--bdb:#A0BEDF;
+  --t:#1A2E4A;--t2:#4A6A90;--t3:#8AAAC8
+}
+html,body{height:100%;font-family:var(--font-u);background:var(--bg);color:var(--t);overflow:hidden}
+#app{display:grid;grid-template-rows:48px 1fr minmax(64px,auto);height:100vh;overflow:hidden}
+
+/* HEADER */
+.hdr{background:var(--bp);border-bottom:1px solid var(--bd);display:flex;align-items:stretch;padding:0 14px;gap:8px;overflow:hidden}
+.logo{display:flex;align-items:center;gap:9px;margin-right:10px;flex-shrink:0}
+.logo-mark{width:28px;height:28px;background:var(--cagt);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:11px;font-weight:700;color:#fff}
+.logo-text{font-family:var(--font-m);font-size:12px;font-weight:700;color:var(--t);line-height:1.1}
+.logo-sub{font-family:var(--font-m);font-size:9px;color:var(--t2);letter-spacing:.08em}
+.tabs{display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;gap:1px;flex:1}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 11px;cursor:pointer;border:none;background:none;color:var(--t2);font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.05em;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;min-width:64px}
+.tab:hover{color:var(--t)}
+.tab.active{color:var(--t);border-bottom-color:var(--cagt)}
+.tab .tnum{font-size:8px;color:var(--t3);margin-bottom:1px}
+.tab.active .tnum{color:var(--cagt)}
+.tab.tbuild{color:var(--ctool)}.tab.tbuild.active{border-bottom-color:var(--ctool)}
+.tab.tfinal{color:var(--cok)}.tab.tfinal.active{border-bottom-color:var(--cok)}
+
+/* MAIN */
+.main{display:grid;grid-template-columns:210px 1fr 256px;overflow:hidden;min-height:0}
+
+/* LEFT */
+.pl{background:var(--bp);border-right:1px solid var(--bd);overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.plabel{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--t3);padding:4px 2px 2px}
+.pcard{background:var(--bc);border:1px solid var(--bd);border-left:3px solid var(--cagt);border-radius:var(--r);padding:7px 9px;cursor:pointer;transition:all .15s;opacity:.3;pointer-events:none}
+.pcard.on{opacity:1;pointer-events:auto}
+.pcard:hover{background:var(--bh)}
+.pcard.hi{background:var(--bh);border-left-width:4px}
+.pcn{font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--t);margin-bottom:3px}
+.pcd{font-size:11px;color:var(--t2);line-height:1.4}
+
+/* CENTER */
+.pc{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);min-height:0}
+.shdr{padding:13px 18px 10px;border-bottom:1px solid var(--bd);background:var(--bp);flex-shrink:0}
+.sey{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--cagt);margin-bottom:3px}
+.stit{font-family:var(--font-m);font-size:17px;font-weight:700;color:var(--t);margin-bottom:4px;text-wrap:balance}
+.sdesc{font-size:12.5px;color:var(--t2);line-height:1.5;max-width:58ch}
+.ga{flex:1;overflow:hidden;position:relative;min-height:0}
+.ga::before{content:'';position:absolute;inset:0;background-image:radial-gradient(var(--bd) 1px,transparent 1px);background-size:32px 32px;opacity:.4;pointer-events:none}
+.sctrl{padding:9px 18px;border-top:1px solid var(--bd);background:var(--bp);display:flex;gap:8px;align-items:center;flex-shrink:0}
+.shint{font-size:11.5px;color:var(--t3);flex:1;font-family:var(--font-m)}
+
+/* BUTTONS */
+.btn{font-family:var(--font-m);font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);border:1px solid;cursor:pointer;transition:all .12s;letter-spacing:.03em;white-space:nowrap}
+.btn-p{background:var(--cagt);color:#fff;border-color:var(--cagt)}.btn-p:hover{filter:brightness(1.12)}
+.btn-g{background:transparent;color:var(--t2);border-color:var(--bd)}.btn-g:hover{background:var(--bh);color:var(--t)}
+.btn-t{background:transparent;color:var(--ctool);border-color:var(--ctool)}.btn-t:hover{background:rgba(5,201,168,.09)}
+.btn-o{background:transparent;color:var(--chum);border-color:var(--chum)}.btn-o:hover{background:rgba(245,115,22,.09)}
+
+/* RIGHT — TRACE */
+.pr{background:var(--bp);border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.thdr{padding:9px 12px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ttit{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--t2)}
+.tclr{font-family:var(--font-m);font-size:9px;color:var(--t3);cursor:pointer;background:none;border:none;padding:2px}
+.tclr:hover{color:var(--t2)}
+.tbody{flex:1;overflow-y:auto;padding:7px;display:flex;flex-direction:column;gap:2px;font-family:var(--font-m);font-size:10.5px}
+.te{padding:5px 7px;border-radius:4px;line-height:1.5;border-left:2px solid transparent;animation:si .18s ease}
+@keyframes si{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:none}}
+.te.inf{color:var(--t2);border-left-color:var(--bdb)}
+.te.act{color:var(--cllm);border-left-color:var(--cllm);background:rgba(75,143,255,.06)}
+.te.ok{color:var(--cok);border-left-color:var(--cok);background:rgba(30,201,106,.06)}
+.te.warn{color:var(--cmem);border-left-color:var(--cmem);background:rgba(245,166,35,.06)}
+.te.hum{color:var(--chum);border-left-color:var(--chum);background:rgba(245,115,22,.08)}
+.te.err{color:var(--cerr);border-left-color:var(--cerr);background:rgba(239,68,68,.06)}
+.te.div{color:var(--t3);border-left:none;font-size:9px;letter-spacing:.08em;padding:3px 7px}
+.te.wait{color:var(--t2);border-left-color:var(--cmem);background:rgba(245,166,35,.04)}
+.tempty{text-align:center;color:var(--t3);font-family:var(--font-m);font-size:10px;padding:20px 10px;line-height:1.7}
+
+/* BOTTOM */
+.pb{background:var(--bp);border-top:1px solid var(--bd);padding:10px 18px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.task{flex:1;min-width:0}
+.tey{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--t3);margin-bottom:3px}
+.ttl{font-family:var(--font-m);font-size:12px;font-weight:700;color:var(--ctool);margin-bottom:3px}
+.tdsc{font-size:12px;color:var(--t2);line-height:1.4;max-width:72ch}
+.insight{background:var(--bc);border:1px solid var(--bd);border-radius:var(--r);padding:9px 11px;min-width:240px;max-width:300px;flex-shrink:0}
+.iey{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--t3);margin-bottom:4px}
+.itxt{font-size:12px;color:var(--t2);line-height:1.5;font-style:italic}
+
+/* APPROVAL OVERLAY */
+.apop{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bp);border:1px solid var(--chum);border-radius:var(--rl);padding:20px 22px;width:300px;box-shadow:0 0 28px rgba(245,115,22,.2);z-index:20;display:none}
+.apop.vis{display:block;animation:pi .22s ease}
+@keyframes pi{from{opacity:0;transform:translate(-50%,-52%) scale(.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.abadge{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--chum);background:rgba(245,115,22,.1);padding:3px 8px;border-radius:20px;display:inline-block;margin-bottom:9px}
+.amsg{font-size:12.5px;color:var(--t);line-height:1.5;margin-bottom:13px}
+.abtns{display:flex;gap:8px}
+.aok{flex:1;background:var(--cok);color:#fff;border:none;padding:8px;font-family:var(--font-m);font-size:11px;font-weight:700;border-radius:var(--r);cursor:pointer}
+.aok:hover{filter:brightness(1.08)}
+.ano{flex:1;background:transparent;color:var(--cerr);border:1px solid var(--cerr);padding:8px;font-family:var(--font-m);font-size:11px;font-weight:700;border-radius:var(--r);cursor:pointer}
+.ano:hover{background:rgba(239,68,68,.1)}
+
+/* MEMORY OVERLAY */
+.meminsp{position:absolute;top:10px;right:10px;width:186px;background:var(--bp);border:1px solid var(--cmem);border-radius:var(--r);padding:9px;font-family:var(--font-m);font-size:10px;display:none}
+.meminsp.vis{display:block;animation:si .2s ease}
+.memtit{font-weight:700;color:var(--cmem);font-size:9px;letter-spacing:.1em;margin-bottom:6px}
+.mrow{padding:4px 0;border-bottom:1px solid var(--bd);color:var(--t2);font-size:10px}
+.mrow:last-child{border:none}
+.mkey{color:var(--cmem)}
+
+/* BUILD MODE */
+.build-wrap{display:flex;flex-direction:column;height:100%}
+.btbar{padding:7px 12px;display:flex;gap:6px;background:var(--bp);border-bottom:1px solid var(--bd);align-items:center;flex-shrink:0}
+.btbar-sep{width:1px;height:22px;background:var(--bd);margin:0 4px}
+.btbar-hint{font-family:var(--font-m);font-size:9px;color:var(--t3);flex:1}
+.bcvs{flex:1;overflow:hidden;position:relative;cursor:crosshair}
+.bcvs.mode-select{cursor:default}
+.bcvs.mode-connect{cursor:cell}
+
+/* BUILD PALETTE */
+.bpal{display:flex;flex-direction:column;gap:5px}
+.bpi{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r);border:1px solid var(--bd);background:var(--bc);cursor:pointer;transition:all .12s}
+.bpi:hover{background:var(--bh)}
+.bpi.sel{border-color:var(--ctool);background:rgba(5,201,168,.08)}
+.bpdot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.bpn{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--t)}
+.bpd{font-size:10px;color:var(--t2);line-height:1.3}
+
+/* Graph SVG */
+.g-node{cursor:pointer;transition:opacity .15s}
+.g-node:hover .nb{filter:brightness(1.2)}
+.g-node.act-node .nb{animation:gpulse .6s ease-out}
+@keyframes gpulse{0%{filter:none}50%{filter:drop-shadow(0 0 8px var(--glow,#7C40F0))}100%{filter:none}}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdb);border-radius:2px}
+
+/* Compact laptops: reduced screen height (browser chrome, 13" panels, projector
+   output) shouldn't clip the bottom task/insight bar or the graph area. */
+@media(max-height:760px){
+  #app{grid-template-rows:42px 1fr minmax(56px,auto)}
+  .shdr{padding:9px 18px 7px}
+  .stit{font-size:15px;margin-bottom:2px}
+  .sdesc{font-size:11.5px}
+  .pb{padding:7px 16px}
+  .insight{padding:7px 9px;min-width:180px;max-width:260px}
+}
+@media(max-height:640px){
+  .ttl{font-size:11px}
+  .tdsc{font-size:11px;line-height:1.35}
+  .itxt{font-size:11px}
+  .insight{min-width:160px}
+}
+@media(max-height:560px){
+  .pb{flex-direction:column;gap:8px}
+  .insight{max-width:none}
+}
+@media(max-width:1180px){
+  .main{grid-template-columns:180px 1fr 220px}
+}
+@media(max-width:980px){
+  .main{grid-template-columns:150px 1fr 190px}
+  .tbody{font-size:9.5px}
+}
+@media(max-width:820px){
+  .main{grid-template-columns:130px 1fr 170px}
+  .pcd{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="app">
+  <header class="hdr">
+    <div class="logo">
+      <div class="logo-mark">CA</div>
+      <div><div class="logo-text">Campus Agent Lab</div><div class="logo-sub">MIT BENGALURU · AGENT PATTERNS</div></div>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+  </header>
+  <div class="main">
+    <aside class="pl" id="pl"><div class="plabel">PATTERN LIBRARY</div></aside>
+    <section class="pc">
+      <div class="shdr" id="shdr"></div>
+      <div class="ga" id="ga">
+        <div class="apop" id="apop">
+          <div class="abadge">⚠ APPROVAL REQUIRED</div>
+          <div class="amsg" id="apmsg"></div>
+          <div class="abtns">
+            <button class="aok" id="apok">✓ Approve</button>
+            <button class="ano" id="apno">✗ Reject</button>
+          </div>
+        </div>
+        <div class="meminsp" id="meminsp">
+          <div class="memtit">MEMORY INSPECTOR</div>
+          <div id="memrows"></div>
+        </div>
+      </div>
+      <div class="sctrl" id="sctrl"></div>
+    </section>
+    <aside class="pr">
+      <div class="thdr"><span class="ttit">EXECUTION TRACE</span><button class="tclr" onclick="clearTrace()">CLEAR</button></div>
+      <div class="tbody" id="tbody"><div class="tempty" id="tempty">Press <strong>Run Demo</strong><br>to see the agent execute</div></div>
+    </aside>
+  </div>
+  <footer class="pb" id="pb"></footer>
+</div>
+
+<script>
+const NT = {
+  student:{c:'#1EC96A',lbl:'STUDENT'},
+  llm:{c:'#4B8FFF',lbl:'LLM'},
+  agent:{c:'#7C40F0',lbl:'AGENT'},
+  tool:{c:'#05C9A8',lbl:'TOOL'},
+  router:{c:'#09B5DC',lbl:'ROUTER'},
+  planner:{c:'#5560E8',lbl:'PLANNER'},
+  executor:{c:'#4338CA',lbl:'EXECUTOR'},
+  memory:{c:'#F5A623',lbl:'MEMORY'},
+  eval:{c:'#A045F5',lbl:'EVALUATOR'},
+  human:{c:'#F57316',lbl:'HUMAN'},
+  response:{c:'#1EC96A',lbl:'RESPONSE'},
+  request:{c:'#C0D4EE',lbl:'REQUEST'},
+  coord:{c:'#7C40F0',lbl:'COORDINATOR'},
+  task:{c:'#5560E8',lbl:'TASK'},
+};
+
+const PATTERNS = [
+  {id:'llm',   name:'LLM',            color:'#4B8FFF', desc:'Generate text from a prompt'},
+  {id:'router',name:'Router',         color:'#09B5DC', desc:'Classify & route requests'},
+  {id:'tool',  name:'Tool Calling',   color:'#05C9A8', desc:'Agent invokes external tools'},
+  {id:'plan',  name:'Planner',        color:'#5560E8', desc:'Decompose tasks into steps'},
+  {id:'multi', name:'Multi-Agent',    color:'#7C40F0', desc:'Specialist agents + coordinator'},
+  {id:'mem',   name:'Memory',         color:'#F5A623', desc:'Preserve context across turns'},
+  {id:'eval',  name:'Evaluator',      color:'#A045F5', desc:'Reflect & verify outputs'},
+  {id:'hitl',  name:'Human-in-Loop',  color:'#F57316', desc:'Approval gates for risky actions'},
+];
+
+const QUERY = '"I have a robotics exam next week. Find my available prep slots, suggest what to study, and register me for the robotics workshop if it doesn\'t clash with my classes."';
+
+const STAGES = [
+{
+  id:1, key:'llm', tabNum:'01', tabLabel:'Basic LLM', eyebrow:'STAGE 01 — PATTERN: PROMPT / RESPONSE',
+  title:'Basic LLM', patternIds:['llm'],
+  desc:'The simplest form: student sends a message, the LLM generates a reply. No tools, no memory, no structured decisions.',
+  task:{title:'Build a campus chatbot', desc:'Connect Student → LLM → Response. Add a system prompt: "You are a campus assistant at MIT Bengaluru." Test with the demo query and observe what the LLM cannot do.'},
+  insight:'"The model generates text. It has no access to your timetable, campus systems, or reality."',
+  graph:{
+    nodes:[
+      {id:'s', type:'student', label:'Student', sub:'robotics exam query', x:100, y:170},
+      {id:'llm', type:'llm', label:'LLM', sub:'claude-sonnet', x:340, y:170},
+      {id:'r', type:'response', label:'Response', sub:'generated text', x:580, y:170},
+    ],
+    edges:[
+      {f:'s',t:'llm',label:'query'},{f:'llm',t:'r',label:'text'},
+    ]
+  },
+  exec:[
+    {d:300, node:'s', msg:'Request: '+QUERY, type:'inf'},
+    {d:700, edge:'s→llm', msg:'→ Sending query to LLM', type:'act'},
+    {d:1100, node:'llm', msg:'◌ LLM processing...', type:'act'},
+    {d:2200, edge:'llm→r', msg:'✓ "Here are some great robotics resources to study..."', type:'ok'},
+    {d:2600, node:'r', msg:'✓ Response delivered', type:'ok'},
+    {d:3000, msg:'━━ LIMITATIONS ━━', type:'div'},
+    {d:3200, msg:'✗ No access to campus timetable', type:'err'},
+    {d:3400, msg:'✗ Cannot find real workshop schedule', type:'err'},
+    {d:3600, msg:'✗ Cannot check for conflicts', type:'err'},
+    {d:3800, msg:'✗ Cannot register for anything', type:'err'},
+  ],
+  hint:'Observe: the LLM answers, but knows nothing real about campus.'
+},
+{
+  id:2, key:'router', tabNum:'02', tabLabel:'Router', eyebrow:'STAGE 02 — PATTERN: ROUTER / CLASSIFIER',
+  title:'Router & Classifier', patternIds:['llm','router'],
+  desc:'Add an intent classifier before the LLM. Route each request to the right specialist handler based on what the student is asking about.',
+  task:{title:'Build a request classifier', desc:'Create a classifier that detects: Academic / Timetable / Events / Admin. Route the demo query and observe — it contains multiple intents. What happens when a query spans categories?'},
+  insight:'"Routing is a pattern. The classifier decides where to send work — but the handlers still need tools to DO anything."',
+  graph:{
+    nodes:[
+      {id:'s', type:'student', label:'Student', sub:'request', x:80, y:170},
+      {id:'cl', type:'router', label:'Classifier', sub:'intent detection', x:260, y:170},
+      {id:'a', type:'agent', label:'Academic', sub:'exam / study', x:470, y:65},
+      {id:'tt', type:'agent', label:'Timetable', sub:'schedule', x:470, y:135},
+      {id:'ev', type:'agent', label:'Events', sub:'workshops', x:470, y:205},
+      {id:'ad', type:'agent', label:'Admin', sub:'registration', x:470, y:275},
+    ],
+    edges:[
+      {f:'s',t:'cl',label:'request'},
+      {f:'cl',t:'a',label:'academic'},{f:'cl',t:'tt',label:'timetable'},
+      {f:'cl',t:'ev',label:'events'},{f:'cl',t:'ad',label:'admin'},
+    ]
+  },
+  exec:[
+    {d:300, node:'s', msg:'Request: robotics exam + workshop + registration', type:'inf'},
+    {d:700, edge:'s→cl', msg:'→ Sending to classifier', type:'act'},
+    {d:1100, node:'cl', msg:'◌ Analyzing intent...', type:'act'},
+    {d:1700, msg:'✓ Intent 1 detected: ACADEMIC (exam prep)', type:'ok'},
+    {d:2000, msg:'✓ Intent 2 detected: EVENTS (workshop)', type:'ok'},
+    {d:2300, msg:'✓ Intent 3 detected: ADMIN (registration)', type:'ok'},
+    {d:2700, edge:'cl→a', msg:'→ Routing to Academic handler', type:'act'},
+    {d:3000, edge:'cl→ev', msg:'→ Routing to Events handler', type:'act'},
+    {d:3300, edge:'cl→ad', msg:'→ Routing to Admin handler', type:'act'},
+    {d:3600, msg:'━━ STILL MISSING ━━', type:'div'},
+    {d:3800, msg:'✗ Handlers have no tools — cannot act', type:'err'},
+    {d:4000, msg:'✗ No shared context between handlers', type:'err'},
+  ],
+  hint:'Routing is a pattern. Handlers still need tools to act.'
+},
+{
+  id:3, key:'tool', tabNum:'03', tabLabel:'Tool Agent', eyebrow:'STAGE 03 — PATTERN: TOOL-CALLING AGENT',
+  title:'Tool-Calling Agent', patternIds:['llm','router','tool'],
+  desc:'The agent can now call real tools. It decides which tool to use, calls it, reads the result, and keeps going — looping until it has everything it needs.',
+  task:{title:'Build a tool-calling agent', desc:'Give the agent 3 tools: get_timetable(), search_workshops("robotics"), check_conflict(). Wire up the decision loop: Decide → Call Tool → Read Result → Continue. Watch the trace — how many tool calls does it take?'},
+  insight:'"An agent is not one LLM call. It is a loop: think, act, observe, repeat."',
+  graph:{
+    nodes:[
+      {id:'s',  type:'student',  label:'Student',     sub:'request',        x:75,  y:170},
+      {id:'ag', type:'agent',    label:'Agent',        sub:'think / decide', x:240, y:170},
+      {id:'t1', type:'tool',     label:'get_timetable', sub:'campus API',    x:460, y:85},
+      {id:'t2', type:'tool',     label:'search_workshops', sub:'events DB',  x:460, y:170},
+      {id:'t3', type:'tool',     label:'check_conflict',   sub:'schedule',   x:460, y:255},
+      {id:'r',  type:'response', label:'Response',     sub:'recommendation', x:610, y:170},
+    ],
+    edges:[
+      {f:'s',t:'ag',label:'query'},
+      {f:'ag',t:'t1',label:'call'},{f:'t1',t:'ag',label:'result',curve:true},
+      {f:'ag',t:'t2',label:'call'},{f:'t2',t:'ag',label:'result',curve:true},
+      {f:'ag',t:'t3',label:'call'},{f:'t3',t:'ag',label:'result',curve:true},
+      {f:'ag',t:'r',label:'done'},
+    ]
+  },
+  exec:[
+    {d:300, node:'s',  msg:'Request: find slots + suggest study + check workshop', type:'inf'},
+    {d:650, edge:'s→ag', msg:'→ Agent activated', type:'act'},
+    {d:900, node:'ag', msg:'◌ Reasoning: need timetable first', type:'act'},
+    {d:1200, edge:'ag→t1', msg:'→ Calling get_timetable(student_id="S2024-MIT")', type:'act'},
+    {d:1600, node:'t1', msg:'✓ Timetable: Mon/Wed/Fri 9am, Tue/Thu 2pm', type:'ok'},
+    {d:1900, edge:'t1→ag', msg:'← Result: 7 free slots found this week', type:'ok'},
+    {d:2200, node:'ag', msg:'◌ Reasoning: need workshop options', type:'act'},
+    {d:2500, edge:'ag→t2', msg:'→ Calling search_workshops("robotics")', type:'act'},
+    {d:2900, node:'t2', msg:'✓ Found: Robotics Lab Workshop — Sat 4pm, Sun 10am', type:'ok'},
+    {d:3200, edge:'t2→ag', msg:'← Result: 2 workshops available', type:'ok'},
+    {d:3500, node:'ag', msg:'◌ Reasoning: check Saturday 4pm conflict', type:'act'},
+    {d:3800, edge:'ag→t3', msg:'→ Calling check_conflict(day="Sat", time="4pm")', type:'act'},
+    {d:4200, node:'t3', msg:'✓ No classes on Saturday', type:'ok'},
+    {d:4500, edge:'t3→ag', msg:'← Result: conflict=false', type:'ok'},
+    {d:4800, edge:'ag→r', msg:'✓ Recommendation ready: Sat 4pm workshop + 3 study slots', type:'ok'},
+    {d:5100, node:'r',  msg:'✓ Response delivered to student', type:'ok'},
+  ],
+  hint:'Count the tool calls: 3 loops to build one answer.'
+},
+{
+  id:4, key:'plan', tabNum:'04', tabLabel:'Planner', eyebrow:'STAGE 04 — PATTERN: PLANNER + EXECUTOR',
+  title:'Planner & Executor', patternIds:['llm','router','tool','plan'],
+  desc:'Complex requests need decomposition. A Planner breaks the task into ordered steps. An Executor works through them. Students can reorder or modify the plan before execution.',
+  task:{title:'Design the task decomposition', desc:'Given the demo query, what is the correct task list? Write it out. Then try reordering — does the order matter? What breaks if you check conflicts before finding workshops?'},
+  insight:'"Plan first, execute second. A good plan prevents wasted tool calls and catches dependencies."',
+  graph:{
+    nodes:[
+      {id:'s',  type:'student',  label:'Student',     sub:'complex request',  x:70,  y:170},
+      {id:'pl', type:'planner',  label:'Planner',     sub:'decompose task',   x:210, y:170},
+      {id:'k1', type:'task',     label:'1. Get exam info',  sub:'',           x:390, y:55},
+      {id:'k2', type:'task',     label:'2. Get timetable',  sub:'',           x:390, y:110},
+      {id:'k3', type:'task',     label:'3. Find free slots', sub:'',          x:390, y:165},
+      {id:'k4', type:'task',     label:'4. Search workshops', sub:'',         x:390, y:220},
+      {id:'k5', type:'task',     label:'5. Check conflicts',  sub:'',         x:390, y:275},
+      {id:'ex', type:'executor', label:'Executor',    sub:'run tasks',        x:570, y:165},
+    ],
+    edges:[
+      {f:'s',t:'pl',label:'request'},
+      {f:'pl',t:'k1'},{f:'pl',t:'k2'},{f:'pl',t:'k3'},{f:'pl',t:'k4'},{f:'pl',t:'k5'},
+      {f:'k1',t:'ex'},{f:'k2',t:'ex'},{f:'k3',t:'ex'},{f:'k4',t:'ex'},{f:'k5',t:'ex'},
+    ]
+  },
+  exec:[
+    {d:300, node:'s',  msg:'Complex request received', type:'inf'},
+    {d:600, edge:'s→pl', msg:'→ Sending to Planner', type:'act'},
+    {d:900, node:'pl', msg:'◌ Decomposing into tasks...', type:'act'},
+    {d:1300, msg:'✓ Plan created: 5 tasks', type:'ok'},
+    {d:1500, node:'k1', msg:'Task 1: Retrieve exam information', type:'inf'},
+    {d:1700, node:'k2', msg:'Task 2: Load student timetable', type:'inf'},
+    {d:1900, node:'k3', msg:'Task 3: Identify free preparation slots', type:'inf'},
+    {d:2100, node:'k4', msg:'Task 4: Search robotics workshops', type:'inf'},
+    {d:2300, node:'k5', msg:'Task 5: Check workshop vs class conflict', type:'inf'},
+    {d:2700, edge:'pl→k1', msg:'→ Executor: starting Task 1', type:'act'},
+    {d:3100, msg:'✓ Task 1 complete: Robotics exam Fri Nov 14', type:'ok'},
+    {d:3400, msg:'✓ Task 2 complete: 7 free slots this week', type:'ok'},
+    {d:3700, msg:'✓ Task 3 complete: Mon 2pm, Thu 5pm, Fri 6pm', type:'ok'},
+    {d:4000, msg:'✓ Task 4 complete: Sat 4pm workshop found', type:'ok'},
+    {d:4300, msg:'✓ Task 5 complete: No conflict on Saturday', type:'ok'},
+    {d:4600, node:'ex', msg:'✓ All tasks complete — results ready', type:'ok'},
+  ],
+  hint:'Try reordering tasks — what breaks? Dependencies matter.'
+},
+{
+  id:5, key:'multi', tabNum:'05', tabLabel:'Multi-Agent', eyebrow:'STAGE 05 — PATTERN: SPECIALIST AGENTS',
+  title:'Multi-Agent System', patternIds:['llm','router','tool','plan','multi'],
+  desc:'Complex systems benefit from specialization. A Coordinator delegates work to specialist agents — each with their own tools and domain knowledge. They work in parallel.',
+  task:{title:'Build a coordinator with two specialists', desc:'Create a Coordinator Agent. Connect an Academic Agent (courses, study tips) and a Schedule Agent (timetable, conflicts). Have the Coordinator combine their results into a final recommendation.'},
+  insight:'"Specialization reduces error. Each agent knows its domain deeply. The coordinator knows how to combine results."',
+  graph:{
+    nodes:[
+      {id:'s',  type:'student',  label:'Student',       sub:'request',         x:80,  y:170},
+      {id:'co', type:'coord',    label:'Coordinator',   sub:'delegate + merge', x:270, y:170},
+      {id:'aa', type:'agent',    label:'Academic Agent', sub:'exam · study',    x:460, y:80},
+      {id:'sa', type:'agent',    label:'Schedule Agent', sub:'timetable · slots', x:460, y:170},
+      {id:'ea', type:'agent',    label:'Event Agent',   sub:'workshops · reg.',  x:460, y:260},
+      {id:'r',  type:'response', label:'Response',      sub:'combined results',  x:610, y:170},
+    ],
+    edges:[
+      {f:'s',t:'co',label:'request'},
+      {f:'co',t:'aa',label:'delegate'},{f:'aa',t:'co',label:'result',curve:true},
+      {f:'co',t:'sa',label:'delegate'},{f:'sa',t:'co',label:'result',curve:true},
+      {f:'co',t:'ea',label:'delegate'},{f:'ea',t:'co',label:'result',curve:true},
+      {f:'co',t:'r',label:'merge'},
+    ]
+  },
+  exec:[
+    {d:300, node:'s',  msg:'Request: exam prep + workshop registration', type:'inf'},
+    {d:600, edge:'s→co', msg:'→ Coordinator activated', type:'act'},
+    {d:900, node:'co', msg:'◌ Analyzing: 3 domains identified', type:'act'},
+    {d:1200, edge:'co→aa', msg:'→ Academic Agent: "What should they study for Robotics?"', type:'act'},
+    {d:1400, edge:'co→sa', msg:'→ Schedule Agent: "Find free slots this week"', type:'act'},
+    {d:1600, edge:'co→ea', msg:'→ Event Agent: "Find robotics workshops"', type:'act'},
+    {d:1900, node:'aa', msg:'◌ Academic Agent: querying course database...', type:'act'},
+    {d:2100, node:'sa', msg:'◌ Schedule Agent: loading timetable...', type:'act'},
+    {d:2300, node:'ea', msg:'◌ Event Agent: searching campus events...', type:'act'},
+    {d:2700, edge:'aa→co', msg:'✓ Academic: Kinematics, Control Systems, ROS2 recommended', type:'ok'},
+    {d:2900, edge:'sa→co', msg:'✓ Schedule: Mon 2pm, Thu 5pm, Fri 6pm free', type:'ok'},
+    {d:3100, edge:'ea→co', msg:'✓ Events: Robotics Lab Workshop Sat 4pm (no conflict)', type:'ok'},
+    {d:3400, node:'co', msg:'◌ Merging results into recommendation...', type:'act'},
+    {d:3800, edge:'co→r', msg:'✓ Integrated response: study plan + workshop registration offer', type:'ok'},
+  ],
+  hint:'Agents work in parallel — faster and more accurate than one agent doing everything.'
+},
+{
+  id:6, key:'mem', tabNum:'06', tabLabel:'Memory', eyebrow:'STAGE 06 — PATTERN: MEMORY',
+  title:'Memory', patternIds:['llm','router','tool','plan','multi','mem'],
+  desc:'Agents without memory repeat themselves and ignore context. Short-term memory holds the current conversation. Long-term memory persists student preferences across sessions.',
+  task:{title:'Add memory to your agent', desc:'After the student says "I prefer afternoon workshops", store that preference. In the next turn ("find me a robotics workshop"), the agent should use it without being told again. Open the Memory Inspector to see what\'s loaded.'},
+  insight:'"Memory is context. Without it, every request starts from scratch. With it, the agent becomes a collaborator."',
+  graph:{
+    nodes:[
+      {id:'s',   type:'student', label:'Student',    sub:'request',          x:85,  y:200},
+      {id:'mem', type:'memory',  label:'Memory Store', sub:'prefs + history', x:340, y:75},
+      {id:'ag',  type:'agent',   label:'Agent',      sub:'context-aware',    x:340, y:200},
+      {id:'r',   type:'response',label:'Response',   sub:'personalised',     x:580, y:200},
+    ],
+    edges:[
+      {f:'s',t:'ag',label:'query'},
+      {f:'mem',t:'ag',label:'context loaded'},
+      {f:'ag',t:'mem',label:'store result',curve:true},
+      {f:'ag',t:'r',label:'response'},
+    ]
+  },
+  memData:[
+    {key:'pref_time', val:'"afternoon / weekend"'},
+    {key:'pref_mode', val:'"hands-on workshops"'},
+    {key:'last_query', val:'"robotics exam Nov 14"'},
+    {key:'campus_id',  val:'"S2024-MIT-042"'},
+  ],
+  exec:[
+    {d:200, msg:'[Turn 1] Student: "I prefer afternoon workshops and I\'m free weekends"', type:'inf'},
+    {d:600, node:'ag', msg:'◌ Agent storing preference...', type:'act'},
+    {d:900, node:'mem', msg:'✓ Stored: pref_time="afternoon/weekend"', type:'ok'},
+    {d:1100, msg:'✓ Stored: pref_mode="hands-on workshops"', type:'ok'},
+    {d:1400, msg:'━━ LATER THAT DAY ━━', type:'div'},
+    {d:1600, msg:'[Turn 2] Student: "Find me a robotics workshop"', type:'inf'},
+    {d:1900, edge:'mem→ag', msg:'→ Loading memory context...', type:'act'},
+    {d:2200, msg:'✓ Memory loaded: 2 preferences + history', type:'ok'},
+    {d:2500, node:'ag', msg:'◌ Filtering: afternoon + weekend workshops...', type:'act'},
+    {d:2900, msg:'✓ Sat 4pm matches pref_time="afternoon/weekend"', type:'ok'},
+    {d:3200, edge:'ag→r', msg:'✓ "Based on your preference for afternoon sessions: Sat 4pm Robotics Workshop"', type:'ok'},
+    {d:3500, msg:'━━ WITHOUT MEMORY ━━', type:'div'},
+    {d:3700, msg:'✗ Agent would suggest Mon 9am (wrong time)', type:'err'},
+    {d:3900, msg:'✗ Student must repeat preferences every session', type:'err'},
+  ],
+  hint:'Open Memory Inspector (top-right) to see what the agent loads.',
+  showMem:true
+},
+{
+  id:7, key:'eval', tabNum:'07', tabLabel:'Evaluator', eyebrow:'STAGE 07 — PATTERN: REFLECTION / EVALUATOR',
+  title:'Reflection & Evaluator', patternIds:['llm','router','tool','plan','multi','mem','eval'],
+  desc:'Agents make mistakes. An Evaluator checks the output against criteria before returning it. Failed checks trigger a retry. This prevents the agent from returning incorrect or incomplete answers.',
+  task:{title:'Build an evaluator with criteria', desc:'Create evaluation rules: (1) Was the timetable checked? (2) Is there no conflict? (3) Was the data from a real tool, not hallucinated? Deliberately break one rule and watch the evaluator catch it.'},
+  insight:'"The first answer is a draft. Evaluation is what separates a reliable system from a lucky one."',
+  graph:{
+    nodes:[
+      {id:'s',   type:'student',  label:'Student',       sub:'request',       x:75,  y:170},
+      {id:'ag',  type:'agent',    label:'Agent',         sub:'first pass',    x:240, y:170},
+      {id:'dr',  type:'response', label:'Draft Output',  sub:'unverified',    x:410, y:100},
+      {id:'ev',  type:'eval',     label:'Evaluator',     sub:'check criteria', x:410, y:240},
+      {id:'fr',  type:'response', label:'Final Response', sub:'verified',     x:580, y:100},
+    ],
+    edges:[
+      {f:'s',t:'ag',label:'query'},
+      {f:'ag',t:'dr',label:'draft'},
+      {f:'dr',t:'ev',label:'evaluate'},
+      {f:'ev',t:'fr',label:'pass ✓'},
+      {f:'ev',t:'ag',label:'fail → retry',curve:true},
+    ]
+  },
+  exec:[
+    {d:300, node:'s',  msg:'Request: workshop recommendation + registration', type:'inf'},
+    {d:600, node:'ag', msg:'◌ Agent generating first draft...', type:'act'},
+    {d:1000, node:'dr', msg:'Draft: "Register for Tue 7pm workshop"', type:'warn'},
+    {d:1200, edge:'dr→ev', msg:'→ Sending to Evaluator', type:'act'},
+    {d:1500, node:'ev', msg:'◌ Running evaluation criteria...', type:'act'},
+    {d:1800, msg:'✓ Check 1: Timetable was loaded — PASS', type:'ok'},
+    {d:2100, msg:'✗ Check 2: Conflict found — Tuesday 7pm has "Algorithm Lab"', type:'err'},
+    {d:2400, msg:'✗ Check 3: Workshop not verified in events database', type:'err'},
+    {d:2700, edge:'ev→ag', msg:'→ FAIL — sending back for retry', type:'warn'},
+    {d:3000, node:'ag', msg:'◌ Retrying with corrections...', type:'act'},
+    {d:3400, msg:'→ Calling check_conflict(day="Tue", time="7pm")', type:'act'},
+    {d:3700, msg:'✓ Confirmed: Tuesday 7pm has a class conflict', type:'ok'},
+    {d:4000, msg:'→ Re-searching workshops with no-conflict constraint', type:'act'},
+    {d:4300, msg:'✓ Sat 4pm: verified in events DB, no conflict', type:'ok'},
+    {d:4600, node:'ev', msg:'✓ ALL checks PASS — approving response', type:'ok'},
+    {d:4900, edge:'ev→fr', msg:'✓ Final verified response delivered', type:'ok'},
+  ],
+  hint:'The first answer was wrong. The Evaluator caught it before the student saw it.'
+},
+{
+  id:8, key:'hitl', tabNum:'08', tabLabel:'Human Loop', eyebrow:'STAGE 08 — PATTERN: HUMAN-IN-THE-LOOP',
+  title:'Human-in-the-Loop', patternIds:['llm','router','tool','plan','multi','mem','eval','hitl'],
+  desc:'Some actions must never be taken automatically. Search and retrieve are safe. Registering for a workshop, deleting records, or sending emails requires the student\'s explicit approval.',
+  task:{title:'Classify actions by risk level', desc:'For each tool: get_timetable(), search_workshops(), register_workshop(), cancel_class(), send_email() — decide: read-only (auto), low-risk (auto with log), high-risk (approval required). Where is the line?'},
+  insight:'"Agents should not do things on your behalf that you did not explicitly authorise. Trust is earned action by action."',
+  graph:{
+    nodes:[
+      {id:'ag',  type:'agent',   label:'Agent',          sub:'decide action',   x:170, y:170},
+      {id:'rd',  type:'tool',    label:'Read-Only',       sub:'auto-execute',    x:370, y:95},
+      {id:'rk',  type:'human',   label:'High-Risk Action', sub:'approval needed', x:370, y:245},
+      {id:'hm',  type:'human',   label:'Human',           sub:'student / admin', x:540, y:245},
+      {id:'ex',  type:'executor',label:'Execute',         sub:'confirmed action', x:540, y:95},
+    ],
+    edges:[
+      {f:'ag',t:'rd',label:'safe'},{f:'rd',t:'ex',label:'auto'},
+      {f:'ag',t:'rk',label:'risky'},{f:'rk',t:'hm',label:'ask'},
+      {f:'hm',t:'ex',label:'approved'},{f:'hm',t:'ag',label:'rejected',curve:true},
+    ]
+  },
+  exec:[
+    {d:300, node:'ag', msg:'◌ Agent: executing read-only actions first...', type:'act'},
+    {d:600, edge:'ag→rd', msg:'→ get_timetable() — auto-executing (safe)', type:'act'},
+    {d:900, msg:'✓ Timetable loaded', type:'ok'},
+    {d:1100, msg:'→ search_workshops() — auto-executing (safe)', type:'act'},
+    {d:1400, msg:'✓ Workshop found: Sat 4pm, no conflict', type:'ok'},
+    {d:1700, edge:'ag→rk', msg:'⚠ register_workshop() — HIGH RISK: stops here', type:'hum'},
+    {d:2000, node:'rk', msg:'⚠ Approval required before registration', type:'hum'},
+    {d:2300, node:'hm', msg:'⚠ Asking student for confirmation...', type:'hum'},
+    {d:2600, msg:'→ WAITING FOR HUMAN APPROVAL', type:'wait'},
+    {d:2900, msg:'[approval popup shown to student]', type:'hum'},
+  ],
+  hint:'Click Approve or Reject in the popup to continue the trace.',
+  showApproval:true
+},
+{
+  id:9, key:'final', tabNum:'→', tabLabel:'Final Demo', eyebrow:'FINAL DEMO — ALL PATTERNS COMBINED',
+  title:'Complete Campus Agent System', patternIds:['llm','router','tool','plan','multi','mem','eval','hitl'],
+  desc:'Every pattern working together. One student request flows through the complete pipeline: analyze → plan → coordinate → tool-call → evaluate → seek approval → execute.',
+  task:{title:'Final Challenge', desc:'Given only: "A student wants to find a suitable workshop, ensure no timetable conflict, and register after approval." — Design the full architecture from scratch. Which patterns are required? Which are optional? Why?'},
+  insight:'"An agent is not magic. It is a system of patterns. You can build this."',
+  graph:{
+    nodes:[
+      {id:'s',   type:'student',  label:'Student',      sub:'request',          x:60,  y:170},
+      {id:'an',  type:'router',   label:'Analyzer',     sub:'intent + routing', x:185, y:170},
+      {id:'pl',  type:'planner',  label:'Planner',      sub:'task decompose',   x:310, y:170},
+      {id:'co',  type:'coord',    label:'Coordinator',  sub:'delegate',         x:440, y:100},
+      {id:'me',  type:'memory',   label:'Memory',       sub:'preferences',      x:310, y:68},
+      {id:'ag1', type:'agent',    label:'Academic',     sub:'study',            x:560, y:50},
+      {id:'ag2', type:'agent',    label:'Schedule',     sub:'timetable',        x:560, y:120},
+      {id:'ag3', type:'agent',    label:'Events',       sub:'workshops',        x:560, y:190},
+      {id:'ev',  type:'eval',     label:'Evaluator',    sub:'verify',           x:440, y:255},
+      {id:'hm',  type:'human',    label:'Approval',     sub:'human gate',       x:310, y:290},
+      {id:'r',   type:'response', label:'Response',     sub:'personalised',     x:610, y:290},
+    ],
+    edges:[
+      {f:'s',t:'an'},{f:'an',t:'pl'},{f:'pl',t:'co'},
+      {f:'me',t:'pl',label:'context'},
+      {f:'co',t:'ag1'},{f:'co',t:'ag2'},{f:'co',t:'ag3'},
+      {f:'ag1',t:'ev'},{f:'ag2',t:'ev'},{f:'ag3',t:'ev'},
+      {f:'ev',t:'hm',label:'register?'},{f:'hm',t:'r',label:'approved'},
+    ]
+  },
+  exec:[
+    {d:200, node:'s',   msg:QUERY, type:'inf'},
+    {d:500, edge:'s→an', msg:'→ Request Analyzer activated', type:'act'},
+    {d:800, node:'an',  msg:'✓ Intent: Academic + Events + Admin (3 domains)', type:'ok'},
+    {d:1100, edge:'an→pl', msg:'→ Planner: decomposing into 6 tasks', type:'act'},
+    {d:1300, edge:'me→pl', msg:'→ Memory: loaded prefs (afternoon / hands-on)', type:'ok'},
+    {d:1600, node:'pl',  msg:'✓ Plan created: 6 ordered tasks', type:'ok'},
+    {d:1900, edge:'pl→co', msg:'→ Coordinator: delegating to 3 agents (parallel)', type:'act'},
+    {d:2200, edge:'co→ag1', msg:'→ Academic Agent: exam topics + study plan', type:'act'},
+    {d:2400, edge:'co→ag2', msg:'→ Schedule Agent: free slots this week', type:'act'},
+    {d:2600, edge:'co→ag3', msg:'→ Event Agent: robotics workshops (matching prefs)', type:'act'},
+    {d:3000, msg:'✓ Academic: Kinematics + ROS2 + 3 prep slots', type:'ok'},
+    {d:3200, msg:'✓ Schedule: Mon 2pm, Thu 5pm confirmed free', type:'ok'},
+    {d:3400, msg:'✓ Events: Sat 4pm Robotics Lab — matches preference', type:'ok'},
+    {d:3700, edge:'ag1→ev', msg:'→ Evaluator: checking all results...', type:'act'},
+    {d:4000, msg:'✓ Eval: timetable verified — PASS', type:'ok'},
+    {d:4200, msg:'✓ Eval: no conflict Sat 4pm — PASS', type:'ok'},
+    {d:4400, msg:'✓ Eval: workshop exists in DB — PASS', type:'ok'},
+    {d:4700, node:'ev',  msg:'✓ All criteria passed', type:'ok'},
+    {d:5000, edge:'ev→hm', msg:'⚠ Registration requires approval — pausing', type:'hum'},
+    {d:5200, node:'hm',  msg:'⚠ "Sat 4pm Robotics Workshop. Register you?" [pending]', type:'hum'},
+    {d:5500, msg:'→ WAITING FOR STUDENT APPROVAL', type:'wait'},
+  ],
+  hint:'This is the complete system. Every node is a pattern you have built.',
+  showApproval:true
+},
+{
+  id:10, key:'build', tabNum:'⊞', tabLabel:'Build Mode', isBuild:true,
+  eyebrow:'BUILD MODE — CONSTRUCT YOUR OWN AGENT',
+  title:'Build Your Agent', patternIds:['llm','router','tool','plan','multi','mem','eval','hitl'],
+  desc:'Select a component from the library, click the canvas to place it, then connect components to build your agentic workflow.',
+  task:{title:'Final Challenge', desc:'"A student wants to find a suitable workshop, ensure there is no timetable conflict, and register after approval." — Build the system. Which patterns do you actually need, and why?'},
+  insight:'"The best architecture is the simplest one that solves the problem reliably."',
+  hint:'Select component → click canvas to place → switch to Connect mode to draw edges.'
+}
+];
+
+// ===== STATE =====
+let cur = 0;
+let running = false;
+let aborted = false;
+let approvalResolve = null;
+
+// Build mode state
+let bnodes = [];
+let bedges = [];
+let bmode = 'place'; // place | connect | delete | select
+let bselType = 'agent';
+let bconnFrom = null;
+let bnodeId = 0;
+let bselId = null;
+
+// ===== HELPERS =====
+const $ = id => document.getElementById(id);
+const svgNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs={}, ns=false) {
+  const e = ns ? document.createElementNS(svgNS, tag) : document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k, v);
+  return e;
+}
+function svgEl(tag, attrs={}) { return el(tag, attrs, true); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function hexRgba(hex, a) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function getEdgePts(fn, tn) {
+  const NW=114, NH=40;
+  const dx=tn.x-fn.x, dy=tn.y-fn.y;
+  const ang=Math.atan2(dy,dx), cos=Math.cos(ang), sin=Math.sin(ang);
+  const fw=((fn.w||NW)/2), fh=((fn.h||NH)/2), tw=((tn.w||NW)/2), th=((tn.h||NH)/2);
+  const fs=Math.min(fw/Math.max(Math.abs(cos),.001), fh/Math.max(Math.abs(sin),.001));
+  const ts=Math.min(tw/Math.max(Math.abs(cos),.001), th/Math.max(Math.abs(sin),.001));
+  return {x1:fn.x+cos*(fs+2), y1:fn.y+sin*(fs+2), x2:tn.x-cos*(ts+10), y2:tn.y-sin*(ts+10)};
+}
+
+// ===== TRACE =====
+function clearTrace() {
+  $('tbody').innerHTML = '<div class="tempty" id="tempty">Press <strong>Run Demo</strong><br>to see the agent execute</div>';
+}
+function addTrace(msg, type='inf') {
+  const te = $('tempty');
+  if (te) te.remove();
+  const d = document.createElement('div');
+  d.className = 'te '+type;
+  d.textContent = msg;
+  $('tbody').appendChild(d);
+  $('tbody').scrollTop = $('tbody').scrollHeight;
+}
+
+// ===== GRAPH RENDERING =====
+function drawGraph(stage) {
+  const ga = $('ga');
+  // Remove old SVG (keep overlays)
+  const old = ga.querySelector('svg');
+  if (old) old.remove();
+
+  if (stage.isBuild) { initBuild(); return; }
+
+  const svg = svgEl('svg',{viewBox:'0 0 680 340',width:'100%',height:'100%',id:'gsvg'});
+
+  // defs: arrowhead
+  const defs = svgEl('defs');
+  const mkr = svgEl('marker',{id:'arr',viewBox:'0 0 10 10',refX:'8',refY:'5',
+    markerWidth:'5',markerHeight:'5',orient:'auto'});
+  const path = svgEl('path',{d:'M0,0 L0,10 L10,5 Z',fill:'#27436E'});
+  mkr.appendChild(path); defs.appendChild(mkr);
+  // colored markers for animation
+  ['#4B8FFF','#7C40F0','#05C9A8','#09B5DC','#5560E8','#F5A623','#A045F5','#F57316','#1EC96A','#EF4444'].forEach(c=>{
+    const m2 = svgEl('marker',{id:'arr'+c.slice(1),viewBox:'0 0 10 10',refX:'8',refY:'5',
+      markerWidth:'5',markerHeight:'5',orient:'auto'});
+    const p2 = svgEl('path',{d:'M0,0 L0,10 L10,5 Z',fill:c});
+    m2.appendChild(p2); defs.appendChild(m2);
+  });
+  svg.appendChild(defs);
+
+  const eLayer = svgEl('g',{id:'elayer'});
+  const nLayer = svgEl('g',{id:'nlayer'});
+  const pLayer = svgEl('g',{id:'player'});
+
+  const nodeMap = {};
+  stage.graph.nodes.forEach(n=>nodeMap[n.id]=n);
+
+  // Draw edges
+  stage.graph.edges.forEach(e=>{
+    const fn=nodeMap[e.f], tn=nodeMap[e.t];
+    if(!fn||!tn) return;
+    const {x1,y1,x2,y2}=getEdgePts(fn,tn);
+    let d, lx, ly;
+    if(e.curve) {
+      const mx=(x1+x2)/2, my=(y1+y2)/2;
+      const off = e.f>e.t ? -50 : 50;
+      const cx=mx+off, cy=my-40;
+      d=`M${x1},${y1} Q${cx},${cy} ${x2},${y2}`;
+      // label sits on the actual curve (bezier at t=.5), not the straight midpoint —
+      // otherwise it lands on top of the paired reverse edge's label
+      lx = 0.25*x1 + 0.5*cx + 0.25*x2;
+      ly = 0.25*y1 + 0.5*cy + 0.25*y2;
+    } else {
+      d=`M${x1},${y1} L${x2},${y2}`;
+      lx=(x1+x2)/2; ly=(y1+y2)/2-7;
+    }
+    const ep=svgEl('path',{
+      id:`e-${e.f}-${e.t}`, d, fill:'none',
+      stroke:'#27436E','stroke-width':'1.5',
+      'marker-end':'url(#arr)',opacity:'.5',
+      'stroke-dasharray': e.curve ? '4 3' : 'none'
+    });
+    eLayer.appendChild(ep);
+    if(e.label){
+      const et=svgEl('text',{x:lx,y:ly,'font-family':'Space Mono,monospace','font-size':'8',
+        fill:'#2D4A6E','text-anchor':'middle'});
+      et.textContent=e.label;
+      eLayer.appendChild(et);
+    }
+  });
+
+  // Draw nodes
+  stage.graph.nodes.forEach(n=>{
+    const t = NT[n.type]||NT.agent;
+    const c = t.c;
+    const nw=n.w||114, nh=n.h||40;
+    const g=svgEl('g',{id:`n-${n.id}`,class:'g-node',transform:`translate(${n.x},${n.y})`});
+
+    const bg=svgEl('rect',{class:'nb',x:-nw/2,y:-nh/2,width:nw,height:nh,rx:'8',
+      fill:hexRgba(c,.1),stroke:c,'stroke-width':'1.5'});
+    const bar=svgEl('rect',{x:-nw/2,y:-nh/2,width:'3',height:nh,rx:'1.5',fill:c});
+
+    const badge=svgEl('text',{x:-nw/2+9,y:-nh/2+9,'font-family':'Space Mono,monospace',
+      'font-size':'8','font-weight':'700',fill:c,'letter-spacing':'.05em'});
+    badge.textContent=t.lbl;
+
+    const lbl=svgEl('text',{x:'0',y:n.sub?'-4':'2','font-family':'Space Mono,monospace',
+      'font-size':'11','font-weight':'700',fill:'#C0D4EE','text-anchor':'middle','dominant-baseline':'central'});
+    lbl.textContent=n.label;
+
+    g.appendChild(bg); g.appendChild(bar); g.appendChild(badge); g.appendChild(lbl);
+
+    if(n.sub){
+      const sub=svgEl('text',{x:'0',y:'10','font-family':'Space Mono,monospace','font-size':'8.5',
+        fill:'#577099','text-anchor':'middle','dominant-baseline':'central'});
+      sub.textContent=n.sub;
+      g.appendChild(sub);
+    }
+    nLayer.appendChild(g);
+  });
+
+  svg.appendChild(eLayer); svg.appendChild(pLayer); svg.appendChild(nLayer);
+  ga.insertBefore(svg, ga.firstChild);
+
+  // Show/hide overlays
+  $('apop').classList.remove('vis');
+  const mi=$('meminsp');
+  if(stage.showMem){
+    const rows=stage.memData||[];
+    $('memrows').innerHTML=rows.map(r=>`<div class="mrow"><span class="mkey">${r.key}</span>: ${r.val}</div>`).join('');
+    mi.classList.add('vis');
+  } else { mi.classList.remove('vis'); }
+}
+
+// ===== NODE ACTIVATE =====
+function setNodeActive(id, active) {
+  const g = document.querySelector(`#n-${id}`);
+  if(!g) return;
+  const nb = g.querySelector('.nb');
+  if(active){ g.classList.add('act-node'); nb.style.strokeWidth='2.5'; }
+  else { g.classList.remove('act-node'); nb.style.strokeWidth='1.5'; }
+}
+function setEdgeActive(fid, tid, color) {
+  const ep = document.querySelector(`#e-${fid}-${tid}`);
+  if(!ep) return;
+  ep.setAttribute('stroke', color||'#4B8FFF');
+  ep.setAttribute('opacity', '1');
+  ep.setAttribute('marker-end', `url(#arr${(color||'#4B8FFF').slice(1)})`);
+  // Pulse animation
+  const svg = $('gsvg');
+  const pLayer = svg.querySelector('#player');
+  const pPath = ep.cloneNode();
+  pPath.removeAttribute('id');
+  pPath.setAttribute('stroke', color||'#4B8FFF');
+  pPath.setAttribute('stroke-width','2.5');
+  pPath.setAttribute('opacity','0.9');
+  pPath.setAttribute('marker-end','');
+  const len = ep.getTotalLength ? ep.getTotalLength() : 200;
+  pPath.setAttribute('stroke-dasharray', `${len*0.18} ${len*0.82}`);
+  pPath.setAttribute('stroke-dashoffset', `${len*0.18}`);
+  pLayer.appendChild(pPath);
+  let start=null;
+  function anim(ts){
+    if(!start) start=ts;
+    const p=(ts-start)/550;
+    if(p<1){ pPath.setAttribute('stroke-dashoffset', len*0.18 - len*1.18*p); requestAnimationFrame(anim); }
+    else pPath.remove();
+  }
+  requestAnimationFrame(anim);
+}
+
+// ===== DEMO RUNNER =====
+async function runDemo(stageIdx) {
+  if(running){ aborted=true; await sleep(80); }
+  aborted=false; running=true;
+  clearTrace();
+  const stage = STAGES[stageIdx];
+  if(!stage.exec) { running=false; return; }
+
+  // Reset node states
+  if(stage.graph) stage.graph.nodes.forEach(n=>setNodeActive(n.id,false));
+
+  const activeNodes = new Set();
+  let prevT = 0;
+
+  for(const step of stage.exec){
+    if(aborted) break;
+    await sleep(step.d - prevT);
+    prevT = step.d;
+    if(aborted) break;
+
+    if(step.node){ setNodeActive(step.node,true); activeNodes.add(step.node); }
+    if(step.edge){
+      const [f,t]=step.edge.split('→');
+      const c = step.type==='ok'?'#1EC96A':step.type==='err'?'#EF4444':step.type==='hum'?'#F57316':'#4B8FFF';
+      setEdgeActive(f,t,c);
+    }
+    addTrace(step.msg, step.type||'inf');
+
+    if(stage.showApproval && step.msg.includes('WAITING')){
+      await showApproval();
+    }
+  }
+
+  running=false;
+  if(!aborted && activeNodes.size>0){
+    await sleep(2000);
+    activeNodes.forEach(id=>setNodeActive(id,false));
+  }
+}
+
+function showApproval(){
+  return new Promise(resolve=>{
+    approvalResolve=resolve;
+    $('apmsg').textContent='Robotics Lab Workshop — Saturday 4:00 PM. No schedule conflict detected. Register you for this workshop?';
+    $('apop').classList.add('vis');
+  });
+}
+
+$('apok').onclick=()=>{
+  $('apop').classList.remove('vis');
+  addTrace('✓ Student approved: proceeding with registration', 'ok');
+  addTrace('→ Calling register_workshop("robotics-lab-sat-4pm")', 'act');
+  sleep(800).then(()=>addTrace('✓ Registration confirmed — Ref #RW-2024-MIT-042', 'ok'));
+  if(approvalResolve){ approvalResolve('approved'); approvalResolve=null; }
+};
+$('apno').onclick=()=>{
+  $('apop').classList.remove('vis');
+  addTrace('✗ Student rejected: registration cancelled', 'err');
+  addTrace('◌ Agent: noting preference for future reference', 'inf');
+  if(approvalResolve){ approvalResolve('rejected'); approvalResolve=null; }
+};
+
+// ===== BUILD MODE =====
+const BUILD_PALETTE = [
+  {type:'student', desc:'Input / output'},
+  {type:'llm',     desc:'Language model'},
+  {type:'router',  desc:'Classify & route'},
+  {type:'planner', desc:'Decompose tasks'},
+  {type:'agent',   desc:'Autonomous agent'},
+  {type:'tool',    desc:'Tool / API call'},
+  {type:'memory',  desc:'Context store'},
+  {type:'eval',    desc:'Verify output'},
+  {type:'human',   desc:'Approval gate'},
+];
+
+function initBuild(){
+  $('ga').innerHTML='';
+  const wrap=document.createElement('div');
+  wrap.className='build-wrap';
+
+  // Toolbar
+  const tb=document.createElement('div');
+  tb.className='btbar';
+  ['Select','Connect','Delete'].forEach((m,i)=>{
+    const b=document.createElement('button');
+    b.className='btn '+(i===0?'btn-t':'btn-g');
+    b.textContent=m;
+    b.id='bm-'+m.toLowerCase();
+    b.onclick=()=>setBuildMode(m.toLowerCase());
+    tb.appendChild(b);
+  });
+  const sep=document.createElement('div'); sep.className='btbar-sep'; tb.appendChild(sep);
+  const vbtn=document.createElement('button');
+  vbtn.className='btn btn-p'; vbtn.textContent='Validate';
+  vbtn.onclick=validateBuild; tb.appendChild(vbtn);
+  const clr=document.createElement('button');
+  clr.className='btn btn-g'; clr.textContent='Clear';
+  clr.onclick=()=>{ bnodes=[]; bedges=[]; bconnFrom=null; bselId=null; renderBuild(); };
+  tb.appendChild(clr);
+  const hint=document.createElement('span');
+  hint.className='btbar-hint'; hint.id='bhint';
+  hint.textContent='Select a component → click canvas to place';
+  tb.appendChild(hint);
+
+  // Canvas
+  const cvs=document.createElement('div');
+  cvs.className='bcvs mode-'+bmode;
+  cvs.id='bcvs';
+  cvs.onclick=handleBuildClick;
+
+  const bsvg=svgEl('svg',{id:'bsvg',width:'100%',height:'100%'});
+  const defs2=svgEl('defs');
+  const bMkr=svgEl('marker',{id:'barr',viewBox:'0 0 10 10',refX:'8',refY:'5',markerWidth:'5',markerHeight:'5',orient:'auto'});
+  bMkr.appendChild(svgEl('path',{d:'M0,0 L0,10 L10,5 Z',fill:'#27436E'}));
+  defs2.appendChild(bMkr);
+  bsvg.appendChild(defs2);
+  bsvg.appendChild(svgEl('g',{id:'belayer'}));
+  bsvg.appendChild(svgEl('g',{id:'bnlayer'}));
+  cvs.appendChild(bsvg);
+  wrap.appendChild(tb); wrap.appendChild(cvs);
+  $('ga').appendChild(wrap);
+  setBuildMode('place');
+  renderBuild();
+}
+
+function setBuildMode(m){
+  bmode=m;
+  bconnFrom=null;
+  bselId=null;
+  const cvs=$('bcvs');
+  if(cvs){ cvs.className='bcvs mode-'+m; }
+  ['select','connect','delete'].forEach(x=>{
+    const b=$('bm-'+x);
+    if(b) b.className='btn '+(x===m?'btn-t':'btn-g');
+  });
+  const hints={place:'Select component from left panel → click canvas to place',
+    select:'Click a node to select it',
+    connect:'Click source node, then target node to draw an edge',
+    delete:'Click a node to remove it and its connections'};
+  const bh=$('bhint');
+  if(bh) bh.textContent=hints[m]||'';
+  renderBuild();
+}
+
+function handleBuildClick(e){
+  const cvs=$('bcvs');
+  const rect=cvs.getBoundingClientRect();
+  const x=e.clientX-rect.left, y=e.clientY-rect.top;
+  const hit=getBuildNodeAt(x,y);
+
+  if(bmode==='place' && !hit){
+    const t=NT[bselType]||NT.agent;
+    bnodes.push({id:'bn'+(bnodeId++),type:bselType,label:t.lbl,x,y});
+    renderBuild();
+  } else if(bmode==='connect' && hit){
+    if(!bconnFrom){ bconnFrom=hit.id; renderBuild(); }
+    else if(bconnFrom===hit.id){ bconnFrom=null; renderBuild(); }
+    else {
+      if(!bedges.find(e=>e.f===bconnFrom&&e.t===hit.id))
+        bedges.push({f:bconnFrom,t:hit.id});
+      bconnFrom=null;
+      renderBuild();
+    }
+  } else if(bmode==='delete' && hit){
+    bnodes=bnodes.filter(n=>n.id!==hit.id);
+    bedges=bedges.filter(e=>e.f!==hit.id&&e.t!==hit.id);
+    bconnFrom=null;
+    renderBuild();
+  } else if(bmode==='select'){
+    bselId = hit ? hit.id : null;
+    renderBuild();
+  }
+}
+
+function getBuildNodeAt(x,y){
+  for(const n of bnodes){
+    if(Math.abs(n.x-x)<58&&Math.abs(n.y-y)<22) return n;
+  }
+  return null;
+}
+
+function renderBuild(){
+  const eL=document.querySelector('#belayer'), nL=document.querySelector('#bnlayer');
+  if(!eL||!nL) return;
+  eL.innerHTML=''; nL.innerHTML='';
+  const nodeMap={};
+  bnodes.forEach(n=>nodeMap[n.id]=n);
+
+  bedges.forEach(e=>{
+    const fn=nodeMap[e.f], tn=nodeMap[e.t];
+    if(!fn||!tn) return;
+    const {x1,y1,x2,y2}=getEdgePts(fn,tn);
+    const ep=svgEl('path',{d:`M${x1},${y1} L${x2},${y2}`,fill:'none',
+      stroke:'#27436E','stroke-width':'1.5','marker-end':'url(#barr)',opacity:'.7'});
+    eL.appendChild(ep);
+  });
+
+  bnodes.forEach(n=>{
+    const t=NT[n.type]||NT.agent;
+    const c=t.c;
+    const nw=116, nh=38;
+    const active = n.id===bconnFrom || n.id===bselId;
+    const g=svgEl('g',{transform:`translate(${n.x},${n.y})`});
+    g.style.cursor='pointer';
+    g.appendChild(svgEl('rect',{x:-nw/2,y:-nh/2,width:nw,height:nh,rx:'8',fill:hexRgba(c,active?.25:.12),stroke:c,'stroke-width':active?'3':'1.5'}));
+    g.appendChild(svgEl('rect',{x:-nw/2,y:-nh/2,width:'3',height:nh,rx:'1.5',fill:c}));
+    const lbl=svgEl('text',{x:'0',y:'2','font-family':'Space Mono,monospace','font-size':'11','font-weight':'700',fill:'#C0D4EE','text-anchor':'middle','dominant-baseline':'central'});
+    lbl.textContent=n.label;
+    g.appendChild(lbl);
+    g.onclick=(ev)=>{ev.stopPropagation();handleBuildClick({clientX:ev.clientX,clientY:ev.clientY,target:ev.target});};
+    nL.appendChild(g);
+  });
+}
+
+function validateBuild(){
+  const types=new Set(bnodes.map(n=>n.type));
+  const issues=[];
+  if(!types.has('student')) issues.push('✗ No Student node (entry point missing)');
+  if(!types.has('agent')&&!types.has('llm')) issues.push('✗ No Agent or LLM to process the request');
+  if(bedges.length===0) issues.push('✗ No connections — nodes are not linked');
+  if(bnodes.length<3) issues.push('⚠ Very few components — is this the complete system?');
+  const response=types.has('response')||bnodes.some(n=>n.type==='response');
+  if(!response) issues.push('⚠ Consider adding a Response node (output)');
+  clearTrace();
+  if(issues.length===0){
+    addTrace('✓ Architecture looks valid!', 'ok');
+    addTrace('✓ '+bnodes.length+' components, '+bedges.length+' connections', 'ok');
+    addTrace('◌ Consider: does this system need memory? an evaluator? approval?', 'inf');
+  } else {
+    issues.forEach(i=>addTrace(i, i.startsWith('✗')?'err':'warn'));
+    if(issues.every(i=>i.startsWith('⚠'))) addTrace('→ Minor suggestions only — architecture is functional', 'act');
+  }
+}
+
+// ===== STAGE RENDERING =====
+function renderStage(idx){
+  cur=idx;
+  aborted=true;
+  running=false;
+  const stage=STAGES[idx];
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', i===idx);
+  });
+
+  // Pattern library
+  updatePatternLib(stage);
+
+  // Stage header
+  const ey=stage.patternIds.includes('hitl')?'var(--chum)':
+    stage.patternIds.includes('eval')?'var(--cevl)':
+    stage.patternIds.includes('mem')?'var(--cmem)':
+    stage.patternIds.includes('multi')?'var(--cagt)':
+    stage.patternIds.includes('plan')?'var(--cpln)':
+    stage.patternIds.includes('tool')?'var(--ctool)':
+    stage.patternIds.includes('router')?'var(--crtr)':'var(--cagt)';
+  $('shdr').innerHTML=`<div class="sey" style="color:${ey}">${stage.eyebrow}</div>
+    <div class="stit">${stage.title}</div>
+    <div class="sdesc">${stage.desc}</div>`;
+
+  // Graph
+  if(stage.graph || stage.isBuild) drawGraph(stage);
+
+  // Controls
+  const ctrl=$('sctrl');
+  if(stage.isBuild){
+    ctrl.innerHTML=`<span class="shint">Build mode — construct your own agentic workflow</span>
+      <button class="btn btn-g" onclick="renderStage(${idx})">Reset Canvas</button>`;
+    // Palette in left panel for build mode
+    renderBuildPalette();
+  } else {
+    ctrl.innerHTML=`<button class="btn btn-p" onclick="runDemo(${idx})">▶ Run Demo</button>
+      <button class="btn btn-g" onclick="clearTrace()">Clear Trace</button>
+      <span class="shint">${stage.hint||''}</span>`;
+  }
+
+  // Footer
+  $('pb').innerHTML=`<div class="task">
+    <div class="tey">STUDENT CHALLENGE</div>
+    <div class="ttl">${stage.task.title}</div>
+    <div class="tdsc">${stage.task.desc}</div>
+  </div>
+  <div class="insight">
+    <div class="iey">KEY INSIGHT</div>
+    <div class="itxt">${stage.insight}</div>
+  </div>`;
+
+  clearTrace();
+}
+
+function updatePatternLib(stage){
+  const pl=$('pl');
+  pl.innerHTML='<div class="plabel">PATTERN LIBRARY</div>';
+  PATTERNS.forEach(p=>{
+    const on=stage.patternIds.includes(p.id);
+    const hi=stage.patternIds[stage.patternIds.length-1]===p.id;
+    const d=document.createElement('div');
+    d.className='pcard'+(on?' on':'')+(hi?' hi':'');
+    d.style.borderLeftColor=p.color;
+    d.innerHTML=`<div class="pcn" style="color:${on?p.color:'inherit'}">${p.name}</div>
+      <div class="pcd">${p.desc}</div>`;
+    pl.appendChild(d);
+  });
+}
+
+function renderBuildPalette(){
+  const pl=$('pl');
+  pl.innerHTML='<div class="plabel">COMPONENTS</div><div class="bpal" id="bpal"></div>';
+  const bp=$('bpal');
+  BUILD_PALETTE.forEach(p=>{
+    const t=NT[p.type]||NT.agent;
+    const d=document.createElement('div');
+    d.className='bpi'+(bselType===p.type?' sel':'');
+    d.innerHTML=`<div class="bpdot" style="background:${t.c}"></div>
+      <div><div class="bpn">${t.lbl}</div><div class="bpd">${p.desc}</div></div>`;
+    d.onclick=()=>{
+      bselType=p.type; setBuildMode('place');
+      document.querySelectorAll('.bpi').forEach(x=>x.classList.remove('sel'));
+      d.classList.add('sel');
+    };
+    bp.appendChild(d);
+  });
+}
+
+// ===== TABS =====
+function buildTabs(){
+  const tabsEl=$('tabs');
+  STAGES.forEach((s,i)=>{
+    const t=document.createElement('button');
+    t.className='tab'+(i===0?' active':'')+(s.key==='build'?' tbuild':'')+(s.key==='final'?' tfinal':'');
+    t.onclick=()=>renderStage(i);
+    t.innerHTML=`<div class="tnum">${s.tabNum}</div>${s.tabLabel}`;
+    tabsEl.appendChild(t);
+  });
+}
+
+// ===== INIT =====
+buildTabs();
+renderStage(0);
+</script>
