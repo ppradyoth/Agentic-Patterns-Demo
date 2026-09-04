@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIT Symposium Demo 2026</title>
+<style>
+  :root {
+    --bg: #0f0f0e;
+    --card: #181817;
+    --border: #2a2a28;
+    --text: #e8e3d8;
+    --text-2: #8a8479;
+    --accent: #6b9fd4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .wrap { max-width: 640px; width: 100%; }
+  .kicker {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-bottom: 1rem;
+  }
+  h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  p.sub { color: var(--text-2); margin-bottom: 2.5rem; line-height: 1.5; }
+  .links { display: flex; flex-direction: column; gap: 0.75rem; }
+  a.card {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+  a.card:hover { border-color: var(--accent); }
+  a.card .name { font-weight: 600; margin-bottom: 0.25rem; }
+  a.card .desc { font-size: 0.85rem; color: var(--text-2); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker">IEEE SMC · MIT Bengaluru · 5 Sep 2026</div>
+    <h1>Symposium Demo</h1>
+    <p class="sub">Hands-on agent architecture tools for the technical symposium session.</p>
+    <div class="links">
+      <a class="card" href="/pradyoth-bridge-deck.html">
+        <div class="name">Bridge Deck</div>
+        <div class="desc">Now Draw It — from seeing patterns to building them</div>
+      </a>
+      <a class="card" href="/campus-agent-lab.html">
+        <div class="name">Campus Agent Lab</div>
+        <div class="desc">10 agent architecture patterns, interactive execution traces</div>
+      </a>
+      <a class="card" href="/life-agent-builder.html">
+        <div class="name">Life Agent Builder</div>
+        <div class="desc">Design your own agent — Sense, Decide, Act, Rail</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

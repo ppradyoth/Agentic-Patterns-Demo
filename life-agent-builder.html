@@ -1,0 +1,1267 @@
+<title>Life Agent Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg: #070C15;
+  --surface: #0D1827;
+  --surface2: #111E30;
+  --border: #1A3054;
+  --border2: #27436E;
+  --t1: #C0D4EE;
+  --t2: #6B8BAE;
+  --t3: #2D4A6E;
+  --sense: #05C9A8;
+  --decide: #5560E8;
+  --act: #7C40F0;
+  --rail: #F5A623;
+  --chain: #09B5DC;
+  --ok: #1EC96A;
+  --warn: #F57316;
+  --accent: #4B8FFF;
+  --font-m: 'Space Mono','Courier New',monospace;
+  --font-u: 'DM Sans',system-ui,sans-serif;
+  --r: 8px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme=dark]) {
+    --bg: #EDF2FB;
+    --surface: #FFFFFF;
+    --surface2: #F4F8FF;
+    --border: #C8D8EF;
+    --border2: #A0BEDF;
+    --t1: #0F1E30;
+    --t2: #4A6A90;
+    --t3: #9BBAD8;
+  }
+}
+:root[data-theme=dark] {
+  --bg: #070C15;
+  --surface: #0D1827;
+  --surface2: #111E30;
+  --border: #1A3054;
+  --border2: #27436E;
+  --t1: #C0D4EE;
+  --t2: #6B8BAE;
+  --t3: #2D4A6E;
+}
+:root[data-theme=light] {
+  --bg: #EDF2FB;
+  --surface: #FFFFFF;
+  --surface2: #F4F8FF;
+  --border: #C8D8EF;
+  --border2: #A0BEDF;
+  --t1: #0F1E30;
+  --t2: #4A6A90;
+  --t3: #9BBAD8;
+}
+
+html { height: 100%; }
+body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: var(--font-u);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ── HEADER ───────────────────────── */
+.hdr {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.hdr-left { display: flex; align-items: center; gap: 12px; }
+.hdr-badge {
+  width: 32px; height: 32px;
+  background: var(--act);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-m);
+  font-size: 13px; font-weight: 700; color: #fff;
+}
+.hdr-title {
+  font-family: var(--font-m);
+  font-size: 11px; font-weight: 700;
+  color: var(--t1);
+  letter-spacing: .04em;
+  line-height: 1.2;
+}
+.hdr-sub {
+  font-family: var(--font-m);
+  font-size: 9px;
+  color: var(--t2);
+  letter-spacing: .07em;
+}
+.hdr-event {
+  font-family: var(--font-m);
+  font-size: 9px;
+  color: var(--t3);
+  letter-spacing: .06em;
+  text-align: right;
+}
+
+/* ── HERO ────────────────────────── */
+.hero {
+  padding: 40px 24px 32px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-h1 {
+  font-size: clamp(26px, 5vw, 42px);
+  font-weight: 700;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--t1);
+  margin-bottom: 12px;
+}
+.hero-h1 em {
+  font-style: normal;
+  color: var(--act);
+}
+.hero-p {
+  color: var(--t2);
+  font-size: 16px;
+  max-width: 54ch;
+  line-height: 1.6;
+}
+.hero-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0 0;
+}
+
+/* ── PHASES ──────────────────────── */
+.phases {
+  display: flex;
+  gap: 0;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px 24px 0;
+}
+.phase-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-m);
+  font-size: 10px;
+  color: var(--t3);
+  letter-spacing: .05em;
+}
+.phase-step.active { color: var(--t1); }
+.phase-step.done { color: var(--accent); }
+.phase-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+}
+.phase-step.active .phase-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.phase-step.done .phase-num {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.phase-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.phase-step.done + .phase-line { background: var(--accent); }
+
+/* ── MAIN SECTIONS ───────────────── */
+.section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ── PATTERN PICKER ──────────────── */
+.section-label {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--t2);
+  margin-bottom: 6px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 6px;
+  text-wrap: balance;
+}
+.section-desc {
+  color: var(--t2);
+  font-size: 14px;
+  margin-bottom: 22px;
+  max-width: 56ch;
+  line-height: 1.55;
+}
+
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+}
+.pattern-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, box-shadow .15s;
+  position: relative;
+  overflow: hidden;
+}
+.pattern-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--p-accent, var(--accent));
+  opacity: 0;
+  transition: opacity .15s;
+}
+.pattern-card:hover { transform: translateY(-1px); border-color: var(--border2); }
+.pattern-card:hover::before { opacity: 1; }
+.pattern-card.selected {
+  border-color: var(--p-accent, var(--accent));
+  background: var(--surface2);
+  box-shadow: 0 0 0 1px var(--p-accent, var(--accent)) inset;
+}
+.pattern-card.selected::before { opacity: 1; }
+.p-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+  display: block;
+}
+.p-label {
+  font-family: var(--font-m);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--p-accent, var(--accent));
+  margin-bottom: 4px;
+}
+.p-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 4px;
+}
+.p-loop {
+  font-size: 12px;
+  color: var(--t2);
+  line-height: 1.45;
+  font-family: var(--font-m);
+}
+.p-own {
+  border-style: dashed;
+}
+.p-own:hover { border-style: dashed; }
+
+/* ── CANVAS ──────────────────────── */
+#canvas-section { display: none; }
+#canvas-section.visible { display: block; }
+
+.canvas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+@media (max-width: 600px) {
+  .canvas-grid { grid-template-columns: 1fr; }
+}
+
+.field-block {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  transition: border-color .15s;
+}
+.field-block:focus-within { border-color: var(--f-accent, var(--accent)); }
+.field-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+.field-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--f-accent, var(--accent));
+  flex-shrink: 0;
+}
+.field-name {
+  font-family: var(--font-m);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--f-accent, var(--accent));
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--t3);
+  margin-left: auto;
+  font-family: var(--font-m);
+}
+.field-q {
+  font-size: 13px;
+  color: var(--t2);
+  margin-bottom: 8px;
+  line-height: 1.45;
+}
+.field-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 9px 11px;
+  color: var(--t1);
+  font-family: var(--font-u);
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  transition: border-color .15s;
+  line-height: 1.5;
+}
+.field-input:focus { border-color: var(--f-accent, var(--accent)); }
+.field-input::placeholder { color: var(--t3); }
+
+/* ── COMPLEXITY PICKER ─────────────── */
+.complexity-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cx-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--t2);
+  transition: border-color .15s, color .15s, background .15s;
+  font-family: var(--font-u);
+}
+.cx-chip:hover { border-color: var(--border2); color: var(--t1); }
+.cx-chip.selected {
+  border-color: var(--decide);
+  background: var(--surface2);
+  color: var(--t1);
+}
+.cx-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--decide);
+  flex-shrink: 0;
+}
+
+/* ── DIAGRAM ─────────────────────── */
+#diagram-section { display: none; }
+#diagram-section.visible { display: block; }
+
+.diagram-wrap {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px;
+  overflow-x: auto;
+}
+#agent-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 18px;
+}
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--t2);
+  font-family: var(--font-m);
+}
+.leg-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── SPEC CARD ───────────────────── */
+.spec-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-top: 16px;
+}
+.spec-card-hdr {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.spec-card-title {
+  font-family: var(--font-m);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--t2);
+  text-transform: uppercase;
+}
+.spec-rows { padding: 4px 0; }
+.spec-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-key {
+  font-family: var(--font-m);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--s-accent, var(--t3));
+  flex-shrink: 0;
+  width: 72px;
+}
+.spec-val {
+  font-size: 14px;
+  color: var(--t1);
+  line-height: 1.45;
+}
+.spec-val em {
+  font-style: italic;
+  color: var(--t3);
+}
+
+/* ── ACTIONS ─────────────────────── */
+.action-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-family: var(--font-u);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn:hover { opacity: .88; transform: translateY(-1px); }
+.btn-primary { background: var(--act); color: #fff; }
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--border2);
+  color: var(--t2);
+}
+.btn-outline:hover { border-color: var(--t2); color: var(--t1); }
+.btn-reset {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--t3);
+  font-size: 12px;
+  padding: 8px 14px;
+}
+
+/* ── SHARE / COPY ────────────────── */
+.copy-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--ok);
+  color: #fff;
+  font-family: var(--font-m);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  padding: 9px 20px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+  z-index: 999;
+}
+.copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── OWN PATTERN MODAL ───────────── */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(7,12,21,.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+  display: none;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  padding: 28px;
+  max-width: 440px;
+  width: calc(100% - 32px);
+}
+.modal h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--t1);
+}
+.modal p {
+  font-size: 13px;
+  color: var(--t2);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+.modal label {
+  display: block;
+  font-family: var(--font-m);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--t2);
+  margin-bottom: 6px;
+}
+.modal input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 9px 12px;
+  color: var(--t1);
+  font-size: 14px;
+  font-family: var(--font-u);
+  outline: none;
+  margin-bottom: 14px;
+}
+.modal input:focus { border-color: var(--accent); }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+
+/* ── DIVIDER ─────────────────────── */
+.section-div {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* ── FOOTER ──────────────────────── */
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+  text-align: center;
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: .08em;
+  color: var(--t3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-badge">&#x26A1;</div>
+    <div>
+      <div class="hdr-title">LIFE AGENT BUILDER</div>
+      <div class="hdr-sub">IEEE SMC · MIT BENGALURU · HANDS-ON SESSION</div>
+    </div>
+  </div>
+  <div class="hdr-event">SEP 5, 2026 &nbsp;·&nbsp; AB5-308</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">STEP 1 OF 3 &nbsp;·&nbsp; FIND YOUR PATTERN</div>
+  <h1 class="hero-h1">Every stable pattern is an empty slot where <em>an agent can live.</em></h1>
+  <p class="hero-p">Pick the loop that hit closest to home. Then we'll design your agent together — sense, decide, act, rail.</p>
+  <hr class="hero-rule">
+</div>
+
+<!-- PHASES -->
+<div class="phases">
+  <div class="phase-step active" id="ph1">
+    <div class="phase-num">1</div>
+    <span>PICK PATTERN</span>
+  </div>
+  <div class="phase-line"></div>
+  <div class="phase-step" id="ph2">
+    <div class="phase-num">2</div>
+    <span>DESIGN CANVAS</span>
+  </div>
+  <div class="phase-line"></div>
+  <div class="phase-step" id="ph3">
+    <div class="phase-num">3</div>
+    <span>SEE ARCHITECTURE</span>
+  </div>
+</div>
+
+<!-- PATTERN PICKER -->
+<div class="section" id="pattern-section">
+  <div class="section-label">PHASE 1 — PATTERN SELECTION</div>
+  <div class="section-title">Which loop are you in?</div>
+  <div class="section-desc">These are the six patterns from the session. Click the one that stung. Or define your own — any repeating behavior that burns time or costs you something.</div>
+
+  <div class="pattern-grid" id="pattern-grid">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<hr class="section-div">
+
+<!-- CANVAS -->
+<div class="section" id="canvas-section">
+  <div class="section-label">PHASE 2 — AGENT DESIGN CANVAS</div>
+  <div class="section-title" id="canvas-title">Design your agent</div>
+  <div class="section-desc" id="canvas-desc">Fill in the four blocks. Every field starts prefilled for your pattern — edit anything that doesn't fit how you'd actually use this.</div>
+
+  <div class="canvas-grid">
+    <!-- SENSE -->
+    <div class="field-block" style="--f-accent: var(--sense)">
+      <div class="field-header">
+        <div class="field-dot"></div>
+        <div class="field-name">SENSE</div>
+        <div class="field-hint">What data do you already produce?</div>
+      </div>
+      <div class="field-q">What observable signal tells your agent the pattern is firing?</div>
+      <textarea class="field-input" id="f-sense" rows="2" placeholder="e.g. screen-time log shows >2hrs after 10pm"></textarea>
+    </div>
+
+    <!-- DECIDE -->
+    <div class="field-block" style="--f-accent: var(--decide)">
+      <div class="field-header">
+        <div class="field-dot"></div>
+        <div class="field-name">DECIDE</div>
+        <div class="field-hint">What kind of brain?</div>
+      </div>
+      <div class="field-q">How should the agent figure out what to do? Pick a complexity level:</div>
+      <div class="complexity-row" id="cx-row">
+        <label class="cx-chip" onclick="setCx(this,'rule')">
+          <div class="cx-dot"></div> Rule (if/else)
+        </label>
+        <label class="cx-chip" onclick="setCx(this,'classify')">
+          <div class="cx-dot"></div> Classifier
+        </label>
+        <label class="cx-chip" onclick="setCx(this,'llm')">
+          <div class="cx-dot"></div> LLM call
+        </label>
+        <label class="cx-chip" onclick="setCx(this,'plan')">
+          <div class="cx-dot"></div> Planner
+        </label>
+      </div>
+      <textarea class="field-input" id="f-decide" rows="2" style="margin-top:10px" placeholder="e.g. If screen time > 2hrs AND time > 10pm → trigger wind-down"></textarea>
+    </div>
+
+    <!-- ACT -->
+    <div class="field-block" style="--f-accent: var(--act)">
+      <div class="field-header">
+        <div class="field-dot"></div>
+        <div class="field-name">ACT</div>
+        <div class="field-hint">One tool, one action</div>
+      </div>
+      <div class="field-q">What does the agent actually DO? One concrete action (send message, block app, set alarm…)</div>
+      <textarea class="field-input" id="f-act" rows="2" placeholder="e.g. Send notification: 'Put the phone down. Sleep in 30 min.'"></textarea>
+    </div>
+
+    <!-- RAIL -->
+    <div class="field-block" style="--f-accent: var(--rail)">
+      <div class="field-header">
+        <div class="field-dot"></div>
+        <div class="field-name">RAIL</div>
+        <div class="field-hint">The hard rule</div>
+      </div>
+      <div class="field-q">What is the one deterministic guardrail that CANNOT be overridden by the model?</div>
+      <textarea class="field-input" id="f-rail" rows="2" placeholder="e.g. Max 1 message per night. Never fires before 9pm."></textarea>
+    </div>
+  </div>
+
+  <!-- CHAIN -->
+  <div class="field-block" style="--f-accent: var(--chain); margin-top: 12px">
+    <div class="field-header">
+      <div class="field-dot"></div>
+      <div class="field-name">CHAIN</div>
+      <div class="field-hint">Optional: multi-agent?</div>
+    </div>
+    <div class="field-q">Does this need more than one agent? If yes, who coordinates and what do the specialists do?</div>
+    <textarea class="field-input" id="f-chain" rows="2" placeholder="e.g. Single agent is enough here. — OR — Coordinator routes between Notifier + Calendar + Habit-Tracker agents"></textarea>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="buildDiagram()">&#x25B6; Build Architecture</button>
+    <button class="btn btn-outline" onclick="resetCanvas()">&#x21BA; Change Pattern</button>
+  </div>
+</div>
+
+<hr class="section-div" id="diagram-div" style="display:none">
+
+<!-- DIAGRAM -->
+<div class="section" id="diagram-section">
+  <div class="section-label">PHASE 3 — YOUR AGENT ARCHITECTURE</div>
+  <div class="section-title" id="diag-title">Your Agent</div>
+  <div class="section-desc">This is the system you just designed. Each block is a component. Each arrow is a data flow. This diagram is your spec — present it to the room in 90 seconds.</div>
+
+  <div class="diagram-wrap">
+    <svg id="agent-svg" viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="diagram-legend" id="diag-legend"></div>
+  </div>
+
+  <div class="spec-card" id="spec-card">
+    <div class="spec-card-hdr">
+      <div class="spec-card-title">AGENT SPEC</div>
+      <div style="font-family:var(--font-m);font-size:9px;color:var(--t3)" id="spec-pattern-label"></div>
+    </div>
+    <div class="spec-rows" id="spec-rows"></div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="copySpec()">&#x21C5; Copy Spec</button>
+    <button class="btn btn-outline" onclick="editCanvas()">&#x270E; Edit Design</button>
+    <button class="btn btn-reset" onclick="fullReset()">Start Over</button>
+  </div>
+</div>
+
+<div class="footer">
+  IEEE SMC MIT BENGALURU TECHNICAL SYMPOSIUM &nbsp;·&nbsp; EXPLORING PATTERN RECOGNITION IN SPEED AI &nbsp;·&nbsp; 5 SEP 2026
+</div>
+
+<!-- OWN PATTERN MODAL -->
+<div class="modal-backdrop" id="own-modal">
+  <div class="modal">
+    <h3>Define your own pattern</h3>
+    <p>Name the loop you're stuck in — any repeating behavior that burns time, money, or attention. Be specific.</p>
+    <label>PATTERN NAME</label>
+    <input type="text" id="own-name" placeholder="e.g. The 11pm rabbit hole" maxlength="60">
+    <label>THE LOOP (trigger → routine → reward)</label>
+    <input type="text" id="own-loop" placeholder="e.g. Bored at night → open YouTube → 2hrs gone" maxlength="120">
+    <div class="modal-btns">
+      <button class="btn btn-reset" onclick="closeOwnModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmOwnPattern()">Use this pattern</button>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="toast">SPEC COPIED</div>
+
+<script>
+// ── PATTERNS DATA ──────────────────────────────────────────────────────────
+const PATTERNS = [
+  {
+    id:'winddown', icon:'🌙', label:'WIND-DOWN',
+    name:'The 2am Scroll',
+    loop:'Bored / tired → open phone → endless feed → lost 2hrs',
+    accent:'var(--sense)',
+    sense:'Screen-time log shows >2hrs usage after 10pm',
+    decide:'llm', decideTxt:'If screen-time > threshold AND time > 10pm → generate wind-down message',
+    act:'Send push notification with personalized wind-down suggestion',
+    rail:'Max 1 message per night. Never fires before 9pm. No message if already in bed (phone still, no unlock).',
+    chain:'Single agent. Sense → Decide → Notify.'
+  },
+  {
+    id:'cart', icon:'🛒', label:'CART-DRAIN',
+    name:'The 11pm Cart',
+    loop:'Idle browsing → items accumulate → impulse checkout → regret',
+    accent:'var(--rail)',
+    sense:'Browser history or shopping-app session > 20 min + cart value > ₹500',
+    decide:'rule', decideTxt:'If session > 20min AND cart value > ₹500 AND time > 9pm → trigger review',
+    act:'Send "sleep on it" reminder with cart summary + 24hr delay option',
+    rail:'Only triggers once per cart. Never fires for recurring purchases (groceries, subscriptions).',
+    chain:'Single agent with one tool: Cart Reader + Notifier.'
+  },
+  {
+    id:'tabs', icon:'🗂️', label:'TAB-SPIRAL',
+    name:'The 9-Tab Explosion',
+    loop:'Research task → open tabs → context switch → lose thread',
+    accent:'var(--decide)',
+    sense:'Tab count > 7 in active window + same domain visited 3+ times',
+    decide:'classify', decideTxt:'Classify tabs into: active/relevant vs stale/distraction. Flag stale clusters.',
+    act:'Group stale tabs into a "Saved for later" session + send summary digest',
+    rail:'Never closes tabs automatically. Human reviews suggestion before any action.',
+    chain:'Single agent: Tab Inspector → Classifier → Bundler → Notifier.'
+  },
+  {
+    id:'sleep', icon:'😴', label:'SLEEP-ON-IT',
+    name:'Revenge Bedtime',
+    loop:'Long day → resist sleep → "me time" → 1am dread',
+    accent:'var(--chain)',
+    sense:'Calendar shows 7+ hour day AND current time > 11pm AND phone still active',
+    decide:'llm', decideTxt:'Generate personalized "tomorrow looks lighter" note based on next-day calendar scan',
+    act:'Send gentle tomorrow-preview with sleep-time suggestion',
+    rail:'Once per night only. Uses only calendar read-access — no health data.',
+    chain:'Coordinator + two specialists: Calendar-Reader agent + Message-Composer agent.'
+  },
+  {
+    id:'reply', icon:'💬', label:'REPLY-DRAFT',
+    name:'"I\'ll Reply Properly Later"',
+    loop:'Receive message → mark as read → forget → guilt 3 days later',
+    accent:'var(--act)',
+    sense:'Messages flagged "read but unreplied" for > 6 hours',
+    decide:'llm', decideTxt:'Draft a context-aware reply stub based on message thread + relationship history',
+    act:'Save draft reply with reminder to send — never auto-sends',
+    rail:'Always human-in-the-loop for send. Draft only. Max 5 drafts queued at once.',
+    chain:'Single agent: Message-Reader → Draft-Writer → Draft-Saver. Human approves before any send.'
+  },
+  {
+    id:'forget', icon:'🗑️', label:'NEVER-FORGET',
+    name:'The Forgotten Deadline',
+    loop:'Recurring task → forget → scramble last-minute → stress',
+    accent:'var(--ok)',
+    sense:'Calendar + task-list scan for items tagged "recurring" with no completion signal in expected window',
+    decide:'rule', decideTxt:'If recurring task not completed 24hrs before deadline → escalate to reminder chain',
+    act:'Tiered reminders: 24hr alert → 2hr alert → final 30min nudge',
+    rail:'Max 3 reminders per task. Snooze only extends by 1hr, not indefinitely.',
+    chain:'Single agent with memory: tracks completion history per task to tune reminder intensity.'
+  },
+  {
+    id:'own', icon:'✏️', label:'YOUR PATTERN',
+    name:'Define your own',
+    loop:'Pick the loop that stung you personally',
+    accent:'var(--t2)',
+    isOwn: true
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let selected = null;
+let cxMode = null;
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+(function init() {
+  const grid = document.getElementById('pattern-grid');
+  PATTERNS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'pattern-card' + (p.isOwn ? ' p-own' : '');
+    card.style.setProperty('--p-accent', p.accent);
+    card.innerHTML = `
+      <span class="p-icon">${p.icon}</span>
+      <div class="p-label">${p.label}</div>
+      <div class="p-name">${p.name}</div>
+      <div class="p-loop">${p.loop}</div>
+    `;
+    card.addEventListener('click', () => {
+      if (p.isOwn) { openOwnModal(); return; }
+      selectPattern(p, card);
+    });
+    card.dataset.id = p.id;
+    grid.appendChild(card);
+  });
+
+  // Restore from localStorage
+  try {
+    const saved = localStorage.getItem('lab_state');
+    if (saved) {
+      const s = JSON.parse(saved);
+      if (s.patternId) {
+        const p = PATTERNS.find(x => x.id === s.patternId);
+        if (p) {
+          selectPattern(p, document.querySelector(`[data-id="${p.id}"]`), true);
+          if (s.sense) document.getElementById('f-sense').value = s.sense;
+          if (s.decide) document.getElementById('f-decide').value = s.decide;
+          if (s.act) document.getElementById('f-act').value = s.act;
+          if (s.rail) document.getElementById('f-rail').value = s.rail;
+          if (s.chain) document.getElementById('f-chain').value = s.chain;
+          if (s.cx) { const chip = document.querySelector(`[onclick="setCx(this,'${s.cx}')"]`); if(chip) setCx(chip, s.cx); }
+          if (s.builtDiagram) buildDiagram(true);
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Auto-save on input
+  ['f-sense','f-decide','f-act','f-rail','f-chain'].forEach(id => {
+    document.getElementById(id).addEventListener('input', saveState);
+  });
+})();
+
+function saveState() {
+  if (!selected) return;
+  try {
+    localStorage.setItem('lab_state', JSON.stringify({
+      patternId: selected.id,
+      sense: document.getElementById('f-sense').value,
+      decide: document.getElementById('f-decide').value,
+      act: document.getElementById('f-act').value,
+      rail: document.getElementById('f-rail').value,
+      chain: document.getElementById('f-chain').value,
+      cx: cxMode,
+      builtDiagram: document.getElementById('diagram-section').classList.contains('visible')
+    }));
+  } catch(e) {}
+}
+
+// ── PATTERN SELECT ─────────────────────────────────────────────────────────
+function selectPattern(p, cardEl, silent) {
+  selected = p;
+  document.querySelectorAll('.pattern-card').forEach(c => c.classList.remove('selected'));
+  if (cardEl) cardEl.classList.add('selected');
+
+  // Fill canvas
+  document.getElementById('canvas-title').textContent = `Design your ${p.name} agent`;
+  document.getElementById('canvas-desc').textContent = `Fields are pre-filled with a suggested design for the "${p.name}" pattern. Edit anything — make it yours.`;
+  document.getElementById('f-sense').value = p.sense || '';
+  document.getElementById('f-decide').value = p.decideTxt || '';
+  document.getElementById('f-act').value = p.act || '';
+  document.getElementById('f-rail').value = p.rail || '';
+  document.getElementById('f-chain').value = p.chain || '';
+
+  // Set complexity chip
+  document.querySelectorAll('.cx-chip').forEach(c => c.classList.remove('selected'));
+  if (p.decide) {
+    const chip = document.querySelector(`[onclick="setCx(this,'${p.decide}')"]`);
+    if (chip) { chip.classList.add('selected'); cxMode = p.decide; }
+  }
+
+  // Update phases
+  updatePhase(2);
+
+  // Show canvas
+  document.getElementById('canvas-section').classList.add('visible');
+
+  // Hide diagram
+  document.getElementById('diagram-section').classList.remove('visible');
+  document.getElementById('diagram-div').style.display = 'none';
+
+  if (!silent) {
+    document.getElementById('canvas-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    saveState();
+  }
+}
+
+function setCx(el, mode) {
+  document.querySelectorAll('.cx-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  cxMode = mode;
+  saveState();
+}
+
+// ── OWN PATTERN MODAL ──────────────────────────────────────────────────────
+function openOwnModal() {
+  document.getElementById('own-modal').classList.add('open');
+  document.getElementById('own-name').focus();
+}
+function closeOwnModal() {
+  document.getElementById('own-modal').classList.remove('open');
+}
+function confirmOwnPattern() {
+  const name = document.getElementById('own-name').value.trim();
+  const loop = document.getElementById('own-loop').value.trim();
+  if (!name) { document.getElementById('own-name').focus(); return; }
+  closeOwnModal();
+  const custom = {
+    id: 'own_custom',
+    icon: '✏️', label: 'YOUR PATTERN',
+    name: name,
+    loop: loop || 'Your personal loop',
+    accent: 'var(--t2)',
+    sense: '', decideTxt: '', act: '', rail: '', chain: ''
+  };
+  selectPattern(custom, document.querySelector('[data-id="own"]'));
+}
+
+// ── DIAGRAM BUILD ──────────────────────────────────────────────────────────
+const COLORS = {
+  sense: '#05C9A8', decide: '#5560E8', act: '#7C40F0',
+  rail: '#F5A623', chain: '#09B5DC', trigger: '#4B8FFF', out: '#1EC96A'
+};
+
+function buildDiagram(silent) {
+  if (!selected) return;
+
+  const senseVal = document.getElementById('f-sense').value.trim() || 'Sensor input';
+  const actVal = document.getElementById('f-act').value.trim() || 'Take action';
+  const railVal = document.getElementById('f-rail').value.trim() || 'Guardrail';
+  const chainVal = document.getElementById('f-chain').value.trim() || '';
+  const isMulti = chainVal && chainVal.toLowerCase().includes('coordinator');
+  const cx = cxMode || 'llm';
+
+  const cxLabels = { rule:'RULE ENGINE', classify:'CLASSIFIER', llm:'LLM CALL', plan:'PLANNER' };
+  const decideLabel = cxLabels[cx] || 'DECIDE';
+
+  // Build SVG
+  const svg = document.getElementById('agent-svg');
+
+  // Different layouts depending on multi-agent or single
+  let nodes, edges;
+  if (isMulti) {
+    // Multi-agent layout: wider viewBox
+    svg.setAttribute('viewBox', '0 0 800 260');
+    nodes = [
+      { id:'trigger', x:30,  y:100, w:100, h:44, label:'TRIGGER',     color:COLORS.trigger, sub: truncate(senseVal,18) },
+      { id:'sense',   x:170, y:100, w:110, h:44, label:'SENSOR',      color:COLORS.sense,   sub: 'perceive' },
+      { id:'coord',   x:330, y:100, w:120, h:44, label:'COORDINATOR', color:COLORS.chain,   sub: 'orchestrate' },
+      { id:'spec1',   x:505, y:50,  w:110, h:44, label:'SPECIALIST 1',color:COLORS.act,     sub: 'decide + act' },
+      { id:'spec2',   x:505, y:150, w:110, h:44, label:'SPECIALIST 2',color:COLORS.decide,  sub: 'decide + act' },
+      { id:'rail',    x:330, y:195, w:120, h:36, label:'RAIL',        color:COLORS.rail,    sub: truncate(railVal,18), small:true },
+      { id:'out',     x:670, y:100, w:100, h:44, label:'OUTPUT',      color:COLORS.out,     sub: truncate(actVal,18) },
+    ];
+    edges = [
+      { from:'trigger', to:'sense' },
+      { from:'sense', to:'coord' },
+      { from:'coord', to:'spec1' },
+      { from:'coord', to:'spec2' },
+      { from:'spec1', to:'out', bend: -30 },
+      { from:'spec2', to:'out', bend: 30 },
+      { from:'rail', to:'coord', dashed:true },
+    ];
+  } else {
+    svg.setAttribute('viewBox', '0 0 700 200');
+    nodes = [
+      { id:'trigger', x:20,  y:80, w:100, h:44, label:'TRIGGER',  color:COLORS.trigger, sub: truncate(senseVal,18) },
+      { id:'sense',   x:160, y:80, w:100, h:44, label:'SENSE',    color:COLORS.sense,   sub: 'perceive' },
+      { id:'decide',  x:300, y:80, w:110, h:44, label:decideLabel,color:COLORS.decide,  sub: 'decide' },
+      { id:'act',     x:455, y:80, w:100, h:44, label:'ACT',      color:COLORS.act,     sub: truncate(actVal,18) },
+      { id:'out',     x:600, y:80, w:80,  h:44, label:'OUTPUT',   color:COLORS.out,     sub: 'done' },
+      { id:'rail',    x:300, y:155,w:110, h:36, label:'RAIL',     color:COLORS.rail,    sub: truncate(railVal,18), small:true },
+    ];
+    edges = [
+      { from:'trigger', to:'sense' },
+      { from:'sense', to:'decide' },
+      { from:'decide', to:'act' },
+      { from:'act', to:'out' },
+      { from:'rail', to:'decide', dashed:true },
+    ];
+  }
+
+  // Render
+  svg.innerHTML = renderSVG(nodes, edges);
+
+  // Legend
+  const legend = document.getElementById('diag-legend');
+  const legendItems = [
+    { color: COLORS.trigger, label:'Trigger' },
+    { color: COLORS.sense,   label:'Sense' },
+    { color: COLORS.decide,  label:'Decide (' + (cxLabels[cx]||'LLM') + ')' },
+    { color: COLORS.act,     label:'Act' },
+    { color: COLORS.rail,    label:'Rail (hard rule)' },
+    { color: COLORS.out,     label:'Output' },
+  ];
+  if (isMulti) legendItems.push({ color: COLORS.chain, label: 'Coordinator' });
+  legend.innerHTML = legendItems.map(l =>
+    `<div class="leg-item"><div class="leg-dot" style="background:${l.color}"></div>${l.label}</div>`
+  ).join('');
+
+  // Spec card
+  document.getElementById('spec-pattern-label').textContent = (selected.label || 'CUSTOM') + ' PATTERN';
+  const specRows = [
+    { key:'SENSE',   val: document.getElementById('f-sense').value.trim(),  accent:COLORS.sense },
+    { key:'DECIDE',  val: (cxLabels[cx]||'LLM') + ' — ' + document.getElementById('f-decide').value.trim(), accent:COLORS.decide },
+    { key:'ACT',     val: document.getElementById('f-act').value.trim(),    accent:COLORS.act },
+    { key:'RAIL',    val: document.getElementById('f-rail').value.trim(),   accent:COLORS.rail },
+    { key:'CHAIN',   val: document.getElementById('f-chain').value.trim() || 'Single agent', accent:COLORS.chain },
+  ];
+  document.getElementById('spec-rows').innerHTML = specRows.map(r =>
+    `<div class="spec-row">
+      <div class="spec-key" style="--s-accent:${r.accent}">${r.key}</div>
+      <div class="spec-val">${r.val || '<em>not specified</em>'}</div>
+    </div>`
+  ).join('');
+  document.getElementById('diag-title').textContent = (selected.name || 'Your Agent') + ' — Architecture';
+
+  // Show
+  updatePhase(3);
+  document.getElementById('diagram-div').style.display = '';
+  document.getElementById('diagram-section').classList.add('visible');
+  saveState();
+  if (!silent) document.getElementById('diagram-section').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function renderSVG(nodes, edges) {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const textColor = isDark ? '#C0D4EE' : '#0F1E30';
+  const subColor  = isDark ? '#6B8BAE' : '#4A6A90';
+  const bgColor   = isDark ? '#0D1827'  : '#FFFFFF';
+  const edgeColor = isDark ? '#27436E'  : '#A0BEDF';
+
+  // Build node map
+  const nodeMap = {};
+  nodes.forEach(n => { nodeMap[n.id] = n; });
+
+  let out = `<defs>
+    ${nodes.map(n => `<filter id="glow-${n.id}" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>`).join('')}
+  </defs>`;
+
+  // Edges first (behind nodes)
+  edges.forEach(e => {
+    const from = nodeMap[e.from];
+    const to   = nodeMap[e.to];
+    if (!from || !to) return;
+    const x1 = from.x + from.w;
+    const y1 = from.y + from.h / 2;
+    const x2 = to.x;
+    const y2 = to.y + to.h / 2;
+    const mx = (x1 + x2) / 2;
+    const bend = e.bend || 0;
+    const d = bend
+      ? `M ${x1} ${y1} C ${mx} ${y1 + bend} ${mx} ${y2 + bend} ${x2} ${y2}`
+      : `M ${x1} ${y1} C ${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`;
+    const stroke = e.dashed ? COLORS.rail : edgeColor;
+    out += `<path d="${d}" stroke="${stroke}" stroke-width="1.5" fill="none" ${e.dashed ? 'stroke-dasharray="4 3"' : ''} marker-end="url(#arr-${e.from})"/>`;
+    // Arrow marker inline
+    out += `<defs><marker id="arr-${e.from}" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <polygon points="0 0, 7 3.5, 0 7" fill="${stroke}"/>
+    </marker></defs>`;
+  });
+
+  // Nodes
+  nodes.forEach(n => {
+    const r = 6;
+    const fontSize = n.small ? 8 : 9;
+    const subFontSize = 10;
+    out += `<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="${r}" fill="${bgColor}" stroke="${n.color}" stroke-width="1.5"/>`;
+    out += `<text x="${n.x + n.w/2}" y="${n.y + (n.small ? 14 : 16)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${fontSize}" font-weight="700" fill="${n.color}" letter-spacing="0.08">${n.label}</text>`;
+    if (!n.small && n.sub) {
+      out += `<text x="${n.x + n.w/2}" y="${n.y + 30}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${subFontSize}" fill="${subColor}">${n.sub}</text>`;
+    }
+    if (n.small && n.sub) {
+      out += `<text x="${n.x + n.w/2}" y="${n.y + 24}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="${subColor}">${n.sub}</text>`;
+    }
+  });
+
+  return out;
+}
+
+function truncate(s, len) {
+  if (!s) return '';
+  return s.length > len ? s.slice(0, len) + '…' : s;
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────────────────
+function updatePhase(active) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('ph' + i);
+    el.classList.remove('active','done');
+    if (i < active) el.classList.add('done');
+    else if (i === active) el.classList.add('active');
+  });
+}
+
+function resetCanvas() {
+  document.getElementById('canvas-section').classList.remove('visible');
+  document.getElementById('diagram-section').classList.remove('visible');
+  document.getElementById('diagram-div').style.display = 'none';
+  document.querySelectorAll('.pattern-card').forEach(c => c.classList.remove('selected'));
+  selected = null;
+  updatePhase(1);
+  document.getElementById('pattern-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function editCanvas() {
+  document.getElementById('diagram-section').classList.remove('visible');
+  document.getElementById('diagram-div').style.display = 'none';
+  updatePhase(2);
+  document.getElementById('canvas-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function fullReset() {
+  try { localStorage.removeItem('lab_state'); } catch(e) {}
+  resetCanvas();
+}
+
+function copySpec() {
+  if (!selected) return;
+  const lines = [
+    `AGENT SPEC — ${(selected.name || 'Custom Agent').toUpperCase()}`,
+    `Pattern: ${selected.loop || ''}`,
+    '',
+    `SENSE:   ${document.getElementById('f-sense').value.trim()}`,
+    `DECIDE:  ${document.getElementById('f-decide').value.trim()}`,
+    `ACT:     ${document.getElementById('f-act').value.trim()}`,
+    `RAIL:    ${document.getElementById('f-rail').value.trim()}`,
+    `CHAIN:   ${document.getElementById('f-chain').value.trim() || 'Single agent'}`,
+    '',
+    'IEEE SMC MIT Bengaluru · Life Agent Builder · 5 Sep 2026'
+  ].join('\n');
+
+  try {
+    navigator.clipboard.writeText(lines).then(() => showToast('SPEC COPIED'));
+  } catch(e) {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = lines;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('SPEC COPIED');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// Close modal on backdrop click
+document.getElementById('own-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeOwnModal();
+});
+document.getElementById('own-name').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('own-loop').focus();
+});
+document.getElementById('own-loop').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') confirmOwnPattern();
+});
+</script>
