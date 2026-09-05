@@ -117,16 +117,30 @@ spot.
 
 ## If something breaks live
 
+- **429 rate limit errors:** confirmed live in testing — the free tier is
+  tight, and the reported limit isn't even consistent (we saw both `20`
+  and `5` in the same run). Every call now goes through `call_model()`,
+  which rotates across several free-tier models on a 429 instead of just
+  waiting — falling over to a different model is usually instant. Sections
+  1–4 plus the Router stayed well under the limit in testing; Planner and
+  Memory (deep into the optional Section 6) are where it can still show up
+  after enough cumulative requests. If you see it, it's not broken — either
+  wait for the automatic retry or just re-run the cell in a minute.
 - **Model name 404s:** the notebook has a fallback cell that lists every
   model your key can actually use — run it, copy a working name into the
   `MODEL` variable near the top, re-run from there.
-- **`previous_interaction_id` errors in section 3:** the retry function
-  already catches this and falls back to a fresh call. If you see a
-  different error there, skip to section 4 and come back — nothing after
-  it depends on section 3 succeeding.
+- **The router (6a) misclassifies one of the four test questions:**
+  confirmed in testing — it filed "When is the robotics exam?" under
+  `timetable` instead of `academic`. That's not a bug, it's the real
+  failure mode Stage 02 has on its own — say so out loud, it's a better
+  teaching moment live than a clean pass would have been.
 - **Someone's Colab secret isn't found:** the key-loading cell falls back
   to a hidden `getpass` prompt automatically — tell them to just paste the
   key when asked.
+- **Section 1 doesn't hallucinate:** some models correctly decline instead
+  of confidently guessing. The follow-up markdown now handles both
+  outcomes — if it declined, there's a harder follow-up question in the
+  cell's own text to try live.
 
 ---
 
