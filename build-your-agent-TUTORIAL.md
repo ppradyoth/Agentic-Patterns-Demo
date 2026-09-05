@@ -163,4 +163,4 @@ Point people back to:
 - `life-agent-builder.html` — the visual version of the capstone
 - `pradyoth-bridge-deck.html` — the case studies referenced throughout (Air Canada, Chevrolet, the Hugging Face incident)
 
-All three are live at `mit-symposium-demo-2026.web.app`.
+All three are live at `agentic-patterns-demo.web.app`.
