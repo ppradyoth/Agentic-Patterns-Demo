@@ -38,13 +38,25 @@ that's the actual answer — not a bug to debug live.
 
 ### 1 — A plain call → mirrors **Campus Agent Lab, Stage 01**
 Ask the model something it cannot know (a real calendar it has no access to).
-It will answer anyway, fluently, and be wrong. This is deliberate — it's the
-same "will not throw an exception, it will lie politely" moment from the
-Basic LLM stage, except this time nobody scripted the wrong answer. The
-model produced it live.
+This is deliberate — it's meant to surface the same "will not throw an
+exception, it will lie politely" moment from the Basic LLM stage, except
+nobody scripted the answer this time. The model produces it live, and in
+testing it went one of two ways:
 
-**Talking point:** ask the room what the model said. It's never the same
-answer twice, but it's always confident.
+- **It answers anyway, fluently and wrong.** The failure mode lands exactly
+  as advertised — ask the room what it said, it's rarely the same answer
+  twice, and it's always confident.
+- **It correctly declines** ("I don't have access to your personal
+  calendar..."). This is what actually happened in our test run. Don't
+  treat it as the exercise failing — it's a genuinely good moment to make
+  the sharper point live: this model is well-calibrated on an *obvious*
+  boundary, but nothing stops it from confidently answering something
+  fuzzier. The notebook's own follow-up cell has a harder question ready
+  ("Is it generally fine to book workshops on weeknights?") — use it.
+
+**Talking point either way:** the lesson isn't "the model always lies." It's
+that you can't rely on it declining correctly, and the one time it does,
+that's not a guarantee — just try a slightly less obvious question.
 
 ### 2 — Give it tools → mirrors **Campus Agent Lab, Stage 03**
 Two toy Python functions — `get_timetable()` and `check_conflict()` — get
